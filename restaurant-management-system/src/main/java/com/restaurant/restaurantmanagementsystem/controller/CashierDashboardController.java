@@ -1,15 +1,21 @@
 package com.restaurant.restaurantmanagementsystem.controller;
 
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-@Controller
-@RequestMapping("/cashier")
+import java.util.Map;
+
+@RestController
+@RequestMapping("/api/cashier")
 public class CashierDashboardController {
 
     @GetMapping("/dashboard")
-    public String cashierDashboard() {
-        return "cashier/dashboard"; // maps to templates/cashier/dashboard.html
+    public Map<String, Object> getCashierDashboard() {
+        // Return cashier dashboard data
+        return Map.of(
+            "status", "active",
+            "message", "Cashier dashboard data"
+        );
     }
 }

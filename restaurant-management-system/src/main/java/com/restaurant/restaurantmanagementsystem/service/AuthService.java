@@ -6,17 +6,19 @@ import com.restaurant.restaurantmanagementsystem.model.User;
 import com.restaurant.restaurantmanagementsystem.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 @Service
 public class AuthService {
     @Autowired
     private UserRepository userRepository;
 
     public LoginResponseDTO login(LoginRequestDTO request) {
+        //System.out.println("Login request received: " + request.getUsername() + " " + request.getPassword());
         User user = userRepository.findByUsername(request.getUsername()).orElse(null);
         if (user == null || !user.getPassword().equals(request.getPassword())) {
             return new LoginResponseDTO("Invalid credentials", null, null);
         }
-        return new LoginResponseDTO("Login successful", user.getUsername(), user.getRole());
+        return new LoginResponseDTO("Login successful", user.getUsername(), user.getRole().name());
     }
 
 }

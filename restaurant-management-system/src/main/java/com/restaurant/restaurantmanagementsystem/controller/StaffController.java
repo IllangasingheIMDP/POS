@@ -10,7 +10,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/staff")
-@CrossOrigin("*")
 @PreAuthorize("hasRole('ADMIN')")
 public class StaffController {
 

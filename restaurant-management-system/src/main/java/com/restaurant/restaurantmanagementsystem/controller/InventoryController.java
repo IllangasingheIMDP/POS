@@ -9,7 +9,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/inventory")
-@CrossOrigin("*")
 public class InventoryController {
     @Autowired
     private InventoryService inventoryService;
