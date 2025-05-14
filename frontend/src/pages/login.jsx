@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import {  useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { fetchUser } from '../store/userSlice';
 import api from '../constants/api';
 const Login = () => {
@@ -13,20 +13,20 @@ const Login = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-       const response = await api.post('/auth/login', { username, password });
-       if(response.status === 200){
+      const response = await api.post('/auth/login', { username, password });
+      if (response.status === 200) {
         await dispatch(fetchUser()).unwrap();
         console.log(response.data);
-        if(response.data.role === 'CASHIER'){
+        if (response.data.role === 'CASHIER') {
           navigate('/cashier');
-        }else if(response.data.role === 'CHEF'){
+        } else if (response.data.role === 'CHEF') {
           navigate('/chef');
-        }else if(response.data.role === 'ADMIN'){
+        } else if (response.data.role === 'ADMIN') {
           navigate('/admin');
         }
-       }else{
+      } else {
         setError('Invalid username or password');
-       }
+      }
     } catch (err) {
       setError('Invalid username or password');
       console.error('Login error:', err);
@@ -35,11 +35,21 @@ const Login = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-neutral-900">
-      <div className="flex flex-col md:flex-row w-full max-w-5xl mx-auto rounded-xl overflow-hidden shadow-lg">
-        <div className="w-full md:w-1/2 bg-zinc-300/50 p-8 flex flex-col items-center justify-center relative">
-        <div className='z-10 flex flex-col items-center justify-center  rounded-xl p-8 bg-white/50'> 
-          <h1 className=" z-10 text-4xl font-semibold text-neutral-900 font-['Montserrat']">BISTROFY</h1>
-          <h2 className=" z-10 text-4xl font-normal  text-orange-400 font-['Bayon'] mt-4">WELCOME!</h2>
+      <div className="flex flex-col md:flex-row border w-full mx-auto rounded-xl overflow-hidden shadow-lg">
+        <div className="w-full md:w-1/2 bg-zinc-300/50 p-8 flex flex-col min-h-screen items-center justify-center relative">
+          <div className='z-10 flex flex-col items-center justify-center  rounded-xl p-8 bg-white/50'>
+
+            <h2
+              className="z-10 text-4xl font-bold text-orange-400 font-['Sans_Serif'] mt-4"
+              style={{
+                WebkitTextStroke: '0.7px black',
+                color: 'orange',
+              }}
+            >
+              WELCOME!
+            </h2>
+
+            <h1 className=" z-10 text-4xl font-semibold text-neutral-900 font-['Montserrat']">BISTROFY</h1>
           </div>
           <img
             src="/login.jpg"
