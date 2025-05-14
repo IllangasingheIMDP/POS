@@ -1,6 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import Sidebar from '../components/sidebar';
 import api from '../constants/api';
+import { Doughnut } from 'react-chartjs-2';
+import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
+
+ChartJS.register(ArcElement, Tooltip, Legend);
+
 const AdminDashboard = () => {
   const [dashboardData, setDashboardData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -43,7 +48,7 @@ const AdminDashboard = () => {
   const { stats, recentOrders, bestsellers } = dashboardData;
 
   return (
-    <div className="flex h-screen bg-neutral-900 text-white overflow-hidden">
+    <div className="flex min-h-screen bg-neutral-900 text-white overflow-hidden">
       <Sidebar />
       <div className="flex-1 p-6">
         <div className="flex justify-between items-center mb-6">
@@ -154,22 +159,60 @@ const AdminDashboard = () => {
             </div>
           </div>
           <div className="bg-zinc-900 p-6 rounded-md">
-            <h2 className="text-2xl font-semibold mb-4">Most Ordered</h2>
-            <button className="mb-4 px-4 py-2 bg-neutral-900 rounded-[10px] border border-stone-300">
-              Today
-            </button>
-            <div className="space-y-4">
-              {bestsellers.map((item, index) => (
-                <div key={index} className="flex items-center">
-                  <img src={`${item.itemImage}`} alt={item.itemName} className="w-16 h-16 rounded mr-2" />
-                  <div>
-                    <span>{item.itemName}</span>
-                    <p className="text-stone-300/90">{item.totalSold} dish ordered</p>
-                  </div>
-                </div>
-              ))}
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-2xl font-semibold">Most Ordered</h2>
+              <select className="px-4 py-2 bg-neutral-900 rounded-[10px] border border-stone-300">
+                <option>Today</option>
+                <option>This Week</option>
+                <option>This Month</option>
+              </select>
             </div>
-            <button className="mt-4 px-4 py-2 bg-orange-400 rounded-[10px]">View All</button>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-4">
+                {bestsellers.map((item, index) => (
+                  <div key={index} className="flex items-center p-4 bg-neutral-800 rounded-lg">
+                    <img src={`${item.itemImage}`} alt={item.itemName} 
+                         className="w-16 h-16 rounded-full mr-4 object-cover" />
+                    <div>
+                      <h3 className="font-medium text-white">{item.itemName}</h3>
+                      <p className="text-stone-300/90 text-sm">{item.totalSold} dish ordered</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <div className="flex items-center justify-center">
+                <div className="w-48 h-48 relative">
+                  <Doughnut
+                    data={{
+                      labels: bestsellers.map(item => item.itemName),
+                      datasets: [{
+                        data: bestsellers.map(item => item.totalSold),
+                        backgroundColor: [
+                          '#36A2EB',
+                          '#FF6384',
+                          '#4BC0C0',
+                          '#FFCE56',
+                          '#E7E9ED'
+                        ],
+                        borderWidth: 0,
+                        cutout: '70%'
+                      }]
+                    }}
+                    options={{
+                      plugins: {
+                        legend: {
+                          display: false
+                        }
+                      },
+                      maintainAspectRatio: false
+                    }}
+                  />
+                </div>
+              </div>
+            </div>
+            <button className="w-full mt-6 px-4 py-2 bg-orange-400 rounded-[10px] text-center">
+              View All
+            </button>
           </div>
         </div>
       </div>
