@@ -7,6 +7,7 @@ export const fetchUser = createAsyncThunk('user/fetchUser', async () => {
 
 export const logout = createAsyncThunk('user/logout', async () => {
   await api.post('/auth/logout', {}, { withCredentials: true });
+  window.location.href = '/login';
   return null;
 });
 
