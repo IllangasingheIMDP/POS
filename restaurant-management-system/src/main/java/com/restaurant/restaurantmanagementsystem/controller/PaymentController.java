@@ -13,13 +13,13 @@ public class PaymentController {
     private PaymentService paymentService;
 
     @GetMapping
-    @PreAuthorize("hasRole('ADMIN','CASHIER','CHEF')")
+    @PreAuthorize("hasAnyRole('ADMIN','CASHIER','CHEF')")
     public List<PaymentDTO> getAll() {
         return paymentService.getAllPayments();
     }
 
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN','CASHIER','CHEF')")
+    @PreAuthorize("hasAnyRole('ADMIN','CASHIER','CHEF')")
     public PaymentDTO create(@RequestBody PaymentDTO dto) {
         return paymentService.createPayment(dto);
     }

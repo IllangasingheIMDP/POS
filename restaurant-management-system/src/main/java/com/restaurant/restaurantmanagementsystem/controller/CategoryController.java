@@ -13,31 +13,31 @@ public class CategoryController {
     private CategoryService categoryService;
 
     @GetMapping
-    @PreAuthorize("hasRole('CASHIER','ADMIN','CHEF')")
+    @PreAuthorize("hasAnyRole('CASHIER','ADMIN','CHEF')")
     public List<CategoryDTO> getAll() {
         return categoryService.getAll();
     }
 
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public CategoryDTO create(@RequestBody CategoryDTO dto) {
         return categoryService.create(dto);
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public CategoryDTO update(@PathVariable Long id, @RequestBody CategoryDTO dto) {
         return categoryService.update(id, dto);
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public void delete(@PathVariable Long id) {
         categoryService.delete(id);
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasRole('CASHIER','ADMIN','CHEF')")
+    @PreAuthorize("hasAnyRole('CASHIER','ADMIN','CHEF')")
     public CategoryDTO getById(@PathVariable Long id) {
         return categoryService.getById(id);
     }

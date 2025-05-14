@@ -23,7 +23,7 @@ public class AdminDashboardController {
     private OrderService orderService;
 
     @GetMapping("/dashboard")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public Map<String, Object> getDashboardData() {
         // Dashboard Stats (Total Orders, Revenue, Today Stats, Active Staff)
         DashboardStatsDTO stats = dashboardService.getStats();
@@ -48,7 +48,7 @@ public class AdminDashboardController {
     }
 
     @GetMapping("/menu-manage")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public String showMenuManage() {
         return "admin/menu-manage"; // This should match the Thymeleaf template location
     }

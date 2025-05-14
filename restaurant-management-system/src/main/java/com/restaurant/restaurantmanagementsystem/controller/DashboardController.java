@@ -33,13 +33,13 @@ public class DashboardController {
     private DashboardService dashboardService;
 
     @GetMapping("/stats")
-    @PreAuthorize("hasRole('ADMIN','CASHIER','CHEF')")
+    @PreAuthorize("hasAnyRole('ADMIN','CASHIER','CHEF')")
     public DashboardStatsDTO getStats() {
         return dashboardService.getStats();
     }
 
     @GetMapping("/bestsellers")
-    @PreAuthorize("hasRole('ADMIN','CASHIER','CHEF')")
+    @PreAuthorize("hasAnyRole('ADMIN','CASHIER','CHEF')")
     public List<BestSellerDTO> getTop5Bestsellers(
             @RequestParam("start") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime start,
             @RequestParam("end") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime end) {
@@ -48,7 +48,7 @@ public class DashboardController {
 
 
     @GetMapping("/daily-revenue")
-    @PreAuthorize("hasRole('ADMIN','CASHIER','CHEF')")
+    @PreAuthorize("hasAnyRole('ADMIN','CASHIER','CHEF')")
     public Map<LocalDate, Double> getDailyRevenue(
             @RequestParam("start") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate start,
             @RequestParam("end") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate end) {
@@ -56,7 +56,7 @@ public class DashboardController {
     }
 
     @GetMapping("/recent-orders")
-    @PreAuthorize("hasRole('ADMIN','CASHIER','CHEF')")
+    @PreAuthorize("hasAnyRole('ADMIN','CASHIER','CHEF')")
     public List<OrderDTO> getRecentOrders() {
         return orderService.getRecentOrders();
     }

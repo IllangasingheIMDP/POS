@@ -17,7 +17,7 @@ public class NotificationController {
     private InventoryItemRepository inventoryRepo;
 
     @GetMapping("/low-stock")
-    @PreAuthorize("hasRole('ADMIN','CASHIER','CHEF')")
+    @PreAuthorize("hasAnyRole('ADMIN','CASHIER','CHEF')")
     public List<String> getLowStockNotifications() {
         return inventoryRepo.findByQuantityLessThan(10) // You can also make 10 dynamic if needed
                 .stream()

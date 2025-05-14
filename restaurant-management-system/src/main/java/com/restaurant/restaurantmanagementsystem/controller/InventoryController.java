@@ -14,19 +14,19 @@ public class InventoryController {
     private InventoryService inventoryService;
 
     @GetMapping
-    @PreAuthorize("hasRole('ADMIN','CASHIER','CHEF')")
+    @PreAuthorize("hasAnyRole('ADMIN','CASHIER','CHEF')")
     public List<InventoryItemDTO> getAll() {
         return inventoryService.getAll();
     }
 
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public InventoryItemDTO create(@RequestBody InventoryItemDTO dto) {
         return inventoryService.create(dto);
     }
 
     @GetMapping("/low-stock")
-    @PreAuthorize("hasRole('ADMIN','CASHIER','CHEF')")
+    @PreAuthorize("hasAnyRole('ADMIN','CASHIER','CHEF')")
     public List<InventoryItemDTO> getLowStock() {
         return inventoryService.getLowStockItems();
     }

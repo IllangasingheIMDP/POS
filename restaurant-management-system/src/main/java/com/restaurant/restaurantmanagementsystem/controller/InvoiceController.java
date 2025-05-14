@@ -13,13 +13,13 @@ public class InvoiceController {
     private InvoiceService invoiceService;
 
     @GetMapping
-    @PreAuthorize("hasRole('ADMIN','CASHIER','CHEF')")
+    @PreAuthorize("hasAnyRole('ADMIN','CASHIER','CHEF')")
     public List<InvoiceDTO> getAll() {
         return invoiceService.getAllInvoices();
     }
 
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN','CASHIER','CHEF')")
+    @PreAuthorize("hasAnyRole('ADMIN','CASHIER','CHEF')")
     public InvoiceDTO generate(@RequestParam Long orderId, @RequestParam Long paymentId) {
         return invoiceService.generateInvoice(orderId, paymentId);
     }

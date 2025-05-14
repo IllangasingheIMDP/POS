@@ -13,19 +13,19 @@ public class CartItemController {
     private CartItemService cartService;
 
     @GetMapping("/{sessionId}")
-    @PreAuthorize("hasRole('CASHIER','ADMIN','CHEF')")
+    @PreAuthorize("hasAnyRole('CASHIER','ADMIN','CHEF')")
     public List<CartItemDTO> getCart(@PathVariable String sessionId) {
         return cartService.getCartBySession(sessionId);
     }
 
     @PostMapping
-    @PreAuthorize("hasRole('CASHIER','ADMIN','CHEF')")
+    @PreAuthorize("hasAnyRole('CASHIER','ADMIN','CHEF')")
     public CartItemDTO addItem(@RequestBody CartItemDTO dto) {
         return cartService.addToCart(dto);
     }
 
     @DeleteMapping("/{sessionId}")
-    @PreAuthorize("hasRole('CASHIER','ADMIN','CHEF')")
+    @PreAuthorize("hasAnyRole('CASHIER','ADMIN','CHEF')")
     public void clearCart(@PathVariable String sessionId) {
         cartService.clearCart(sessionId);
     }
