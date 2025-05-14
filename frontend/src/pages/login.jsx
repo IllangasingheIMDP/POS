@@ -72,7 +72,7 @@ const Login = () => {
                 id="username"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                className="w-full h-16 px-4 text-xl bg-transparent border border-orange-400 rounded-[35px] text-white focus:outline-none focus:ring-2 focus:ring-orange-400"
+                className="w-full h-16 text-start items-center px-10 py-8 text-xl bg-transparent border border-orange-400 rounded-[35px] text-white focus:outline-none focus:ring-2 focus:ring-orange-400"
                 required
               />
             </div>
