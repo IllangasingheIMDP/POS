@@ -11,7 +11,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
+import org.springframework.security.access.prepost.PreAuthorize;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -19,7 +19,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("admin")
+@RequestMapping("/api/dashboard")
 
 
 public class DashboardController {
@@ -33,11 +33,13 @@ public class DashboardController {
     private DashboardService dashboardService;
 
     @GetMapping("/stats")
+    @PreAuthorize("hasRole('ADMIN','CASHIER','CHEF')")
     public DashboardStatsDTO getStats() {
         return dashboardService.getStats();
     }
 
     @GetMapping("/bestsellers")
+    @PreAuthorize("hasRole('ADMIN','CASHIER','CHEF')")
     public List<BestSellerDTO> getTop5Bestsellers(
             @RequestParam("start") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime start,
             @RequestParam("end") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime end) {
@@ -46,6 +48,7 @@ public class DashboardController {
 
 
     @GetMapping("/daily-revenue")
+    @PreAuthorize("hasRole('ADMIN','CASHIER','CHEF')")
     public Map<LocalDate, Double> getDailyRevenue(
             @RequestParam("start") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate start,
             @RequestParam("end") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate end) {
@@ -53,6 +56,7 @@ public class DashboardController {
     }
 
     @GetMapping("/recent-orders")
+    @PreAuthorize("hasRole('ADMIN','CASHIER','CHEF')")
     public List<OrderDTO> getRecentOrders() {
         return orderService.getRecentOrders();
     }

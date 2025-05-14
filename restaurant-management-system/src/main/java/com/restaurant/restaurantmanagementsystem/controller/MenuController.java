@@ -6,23 +6,24 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
+import org.springframework.security.access.prepost.PreAuthorize;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/menu")
-@CrossOrigin(origins = "*")
 public class MenuController {
 
     @Autowired
     private MenuService menuService;
 
     @GetMapping
+    @PreAuthorize("hasRole('ADMIN','CASHIER','CHEF')")
     public ResponseEntity<List<MenuItemDTO>> getAll() {
         return ResponseEntity.ok(menuService.getAllMenuItems());
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN','CASHIER','CHEF')")
     public ResponseEntity<MenuItemDTO> getById(@PathVariable Long id) {
         return menuService.getMenuItemById(id)
                 .map(ResponseEntity::ok)
@@ -31,6 +32,7 @@ public class MenuController {
 
     // ✅ Create a new dish with optional image and availability
     @PostMapping(consumes = {"multipart/form-data"})
+    @PreAuthorize("hasRole('ADMIN','CASHIER','CHEF')")
     public ResponseEntity<MenuItemDTO> addDish(
             @RequestParam("name") String name,
             @RequestParam("price") Double price,
@@ -45,6 +47,7 @@ public class MenuController {
 
     // ✅ Update an existing dish with optional new image and availability
     @PutMapping(value = "/{id}", consumes = {"multipart/form-data"})
+    @PreAuthorize("hasRole('ADMIN','CASHIER','CHEF')")
     public ResponseEntity<MenuItemDTO> updateDish(
             @PathVariable Long id,
             @RequestParam("name") String name,
@@ -59,6 +62,7 @@ public class MenuController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN','CASHIER','CHEF')")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         boolean deleted = menuService.deleteMenuItem(id);
         return deleted ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();

@@ -4,21 +4,22 @@ import com.restaurant.restaurantmanagementsystem.service.PaymentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
-
+import org.springframework.security.access.prepost.PreAuthorize;
 @RestController
 @RequestMapping("/api/payments")
-@CrossOrigin("*")
 public class PaymentController {
 
     @Autowired
     private PaymentService paymentService;
 
     @GetMapping
+    @PreAuthorize("hasRole('ADMIN','CASHIER','CHEF')")
     public List<PaymentDTO> getAll() {
         return paymentService.getAllPayments();
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN','CASHIER','CHEF')")
     public PaymentDTO create(@RequestBody PaymentDTO dto) {
         return paymentService.createPayment(dto);
     }

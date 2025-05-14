@@ -7,7 +7,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
+import org.springframework.security.access.prepost.PreAuthorize;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.*;
@@ -15,12 +15,12 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/uploads")
-@CrossOrigin(origins = "*")
 public class ImageUploadController {
 
     private final String uploadDir = "uploads";
 
     @PostMapping("/images")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> uploadImage(@RequestParam("file") MultipartFile file) {
         try {
             Path uploadPath = Paths.get(uploadDir);
@@ -39,6 +39,7 @@ public class ImageUploadController {
     }
 
     @GetMapping("/images/{filename}")
+    @PreAuthorize("hasRole('ADMIN','CASHIER','CHEF')")
     public ResponseEntity<Resource> getImage(@PathVariable String filename) {
         try {
             Path filePath = Paths.get(uploadDir).resolve(filename).normalize();

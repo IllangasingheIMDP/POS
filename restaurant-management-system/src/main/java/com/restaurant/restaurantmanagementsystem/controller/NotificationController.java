@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
+import org.springframework.security.access.prepost.PreAuthorize;
 import java.util.List;
 import java.util.stream.Collectors;
 @RestController
@@ -17,6 +17,7 @@ public class NotificationController {
     private InventoryItemRepository inventoryRepo;
 
     @GetMapping("/low-stock")
+    @PreAuthorize("hasRole('ADMIN','CASHIER','CHEF')")
     public List<String> getLowStockNotifications() {
         return inventoryRepo.findByQuantityLessThan(10) // You can also make 10 dynamic if needed
                 .stream()
