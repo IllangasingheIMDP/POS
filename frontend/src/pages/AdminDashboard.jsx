@@ -3,7 +3,7 @@ import Sidebar from '../components/sidebar';
 import api from '../constants/api';
 import { Doughnut } from 'react-chartjs-2';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
-
+import Header from '../components/header';
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 const AdminDashboard = () => {
@@ -32,10 +32,6 @@ const AdminDashboard = () => {
     fetchDashboardData();
   }, []);
 
-  // Get today's date in a readable format
-  const today = new Date();
-  const options = { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' };
-  const formattedDate = today.toLocaleDateString(undefined, options);
 
   // Loading and error states
   if (loading) {
@@ -51,18 +47,7 @@ const AdminDashboard = () => {
     <div className="flex min-h-screen bg-neutral-900 text-white overflow-hidden">
       <Sidebar />
       <div className="flex-1 p-6">
-        <div className="flex justify-between items-center mb-6">
-          <div>
-            <h1 className="text-3xl font-semibold text-white font-pathway">Dashboard</h1>
-            <p className="text-lg text-stone-300/90 font-inter">{formattedDate}</p>
-          </div>
-          <div className="flex space-x-4">
-            
-            <button className="p-2 bg-stone-700 rounded-[10px]">
-              <img src="/adminprofile.jpg" alt="profile" className="w-7 h-7" />
-            </button>
-          </div>
-        </div>
+        <Header title={'Dashboard'} />
         <div className="grid grid-cols-4 gap-6 mb-6">
           <div className="bg-zinc-900 p-4 rounded-md shadow-[0px_4px_4px_0px_rgba(0,0,0,0.25)]">
             <div className="flex items-center mb-2">
