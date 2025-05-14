@@ -3,7 +3,7 @@ package com.restaurant.restaurantmanagementsystem.controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
+import org.springframework.security.access.prepost.PreAuthorize;
 import java.util.Map;
 
 @RestController
@@ -11,6 +11,7 @@ import java.util.Map;
 public class ChefDashboardController {
 
     @GetMapping("/dashboard")
+    @PreAuthorize("hasRole('CHEF')")
     public Map<String, Object> getChefDashboard() {
         // Return chef dashboard data
         return Map.of(

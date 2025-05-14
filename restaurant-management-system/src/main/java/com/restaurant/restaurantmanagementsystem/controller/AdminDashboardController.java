@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.Map;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 @RestController
 @RequestMapping("/api/admin")
@@ -22,6 +23,7 @@ public class AdminDashboardController {
     private OrderService orderService;
 
     @GetMapping("/dashboard")
+    @PreAuthorize("hasRole('ADMIN')")
     public Map<String, Object> getDashboardData() {
         // Dashboard Stats (Total Orders, Revenue, Today Stats, Active Staff)
         DashboardStatsDTO stats = dashboardService.getStats();
@@ -46,6 +48,7 @@ public class AdminDashboardController {
     }
 
     @GetMapping("/menu-manage")
+    @PreAuthorize("hasRole('ADMIN')")
     public String showMenuManage() {
         return "admin/menu-manage"; // This should match the Thymeleaf template location
     }

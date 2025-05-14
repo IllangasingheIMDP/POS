@@ -4,7 +4,7 @@ import com.restaurant.restaurantmanagementsystem.service.InvoiceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
-
+import org.springframework.security.access.prepost.PreAuthorize;
 @RestController
 @RequestMapping("/api/invoices")
 
@@ -13,11 +13,13 @@ public class InvoiceController {
     private InvoiceService invoiceService;
 
     @GetMapping
+    @PreAuthorize("hasRole('ADMIN','CASHIER','CHEF')")
     public List<InvoiceDTO> getAll() {
         return invoiceService.getAllInvoices();
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN','CASHIER','CHEF')")
     public InvoiceDTO generate(@RequestParam Long orderId, @RequestParam Long paymentId) {
         return invoiceService.generateInvoice(orderId, paymentId);
     }
