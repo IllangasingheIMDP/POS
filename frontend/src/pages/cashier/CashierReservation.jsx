@@ -72,12 +72,12 @@ const CashierReservation = () => {
         <div className="grid grid-cols-4 gap-4 mb-6">
           <div className="flex flex-col">
             <label className="text-white text-sm mb-2 font-medium">Date Range</label>
-            <div className="flex space-x-0 items-center">
+            <div className="flex w-[80%] items-center space-x-1">
               <input
                 type="date"
                 value={startDate}
                 onChange={(e) => setStartDate(e.target.value)}
-                className="bg-orange-400 border border-orange-400 rounded-lg p-2 text-white text-sm w-fit focus:outline-none focus:ring-2 focus:ring-orange-400"
+                className="bg-orange-400 border border-orange-400 rounded-lg p-2 text-white text-xs w-fit focus:outline-none focus:ring-2 focus:ring-orange-400"
                 placeholder="Start Date"
               />
               <span className="text-orange-400">-</span>
