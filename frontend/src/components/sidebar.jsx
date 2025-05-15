@@ -24,7 +24,7 @@ const Sidebar = () => {
       { icon: '/dashboardIcon.svg', text: 'Dashboard', link: '/cashier' },
       { icon: '/orderIcon.svg', text: 'Orders', link: '/cashier/order' },
       { icon: '/menuIcon.svg', text: 'Invoices', link: '/cashier/billing' },
-      { icon: '/reservationIcon.svg', text: 'Reservation', link: '#' },
+      { icon: '/reservationIcon.svg', text: 'Reservation', link: '/cashier/reservation' },
       { icon: '/Inventory.svg', text: 'Inventory', link: '#' },
       { icon: '/staffSchedule.svg', text: 'Staff Schedule', link: '#' },
       { icon: '/cusfeedbackIcon.svg', text: 'Customer Feedback', link: '#' },

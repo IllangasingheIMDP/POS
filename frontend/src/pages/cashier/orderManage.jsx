@@ -99,10 +99,13 @@ const OrderManage = () => {
             <div className="flex-1 bg-[#141E20] rounded-2xl shadow-2xl p-8 backdrop-blur-sm">
                 {/* Header Section */}
                 <div className="flex justify-between items-center mb-8">
-                    <div>
-                        <h1 className="text-4xl font-bold font-['Inter'] text-white mb-2">Order Management</h1>
+                    <div className='flex-col'>
+                        <h1 className="text-4xl font-bold font-['Inter'] text-white mb-2 px-2">Order Management</h1>
+                        
                         <p className="text-base text-gray-400 font-medium">{new Date().toLocaleDateString()}</p>
+                        <hr className='w-full border-t-2 mt-2 border-orange-400' />
                     </div>
+                    
                     <button
                         onClick={() => setShowOrderModal(true)}
                         className="bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg font-semibold hover:from-orange-600 hover:to-orange-700 transition-all duration-300"

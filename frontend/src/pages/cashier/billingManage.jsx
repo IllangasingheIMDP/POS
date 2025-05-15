@@ -150,6 +150,11 @@ const BillingManage = () => {
         <div className="flex min-h-screen w-full bg-gradient-to-br from-[#0B161A] to-[#1a2428] p-6">
             <div className="flex-1 bg-[#141E20] rounded-2xl shadow-2xl p-6 backdrop-blur-sm">
                 {/* Header Stats Section */}
+                 <div className="flex-col justify-between items-center mb-6">
+          <h1 className="text-white text-4xl px-2 font-semibold">Invoices</h1>
+          <hr className='w-full border-t-2 mt-2 border-orange-400' />
+        </div>
+
                 <div className="grid grid-cols-3 gap-6 mb-8">
                     <div className="bg-[#1d2b2f] p-6 rounded-xl hover:shadow-lg transition-all duration-300">
                         <h2 className="text-base font-medium text-gray-400">Total Invoices</h2>
