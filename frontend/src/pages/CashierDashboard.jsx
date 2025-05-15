@@ -6,17 +6,36 @@ const CashierDashboard = () => {
   const [orders, setOrders] = useState([]);
   const [reservations, setReservations] = useState([]);
   const [popularDishes, setPopularDishes] = useState([]);
-  
-  const [dashboardStats, setDashboardStats] = useState({
-    todayOrders: 0,
-    pendingOrders: 0,
-    totalReservations: 0
-  });
+  const [inventoryAlerts, setInventoryAlerts] = useState([]);
+
+  // Add this new function after other fetch functions
+const fetchInventoryAlerts = async () => {
+  try {
+    const response = await api.get('/inventory');
+    const lowStockItems = response.data.filter(item => item.quantity <= item.threshold);
+    setInventoryAlerts(lowStockItems);
+    
+    setDashboardStats(prev => ({
+      ...prev,
+      inventoryAlerts: lowStockItems.length
+    }));
+  } catch (error) {
+    console.error('Error fetching inventory:', error);
+  }
+};
+const [dashboardStats, setDashboardStats] = useState({
+  todayOrders: 0,
+  pendingOrders: 0,
+  totalReservations: 0,
+  inventoryAlerts: 0
+});
+
 
   // Fetch data on component mount
   useEffect(() => {
     fetchOrders();
     fetchReservations();
+    fetchInventoryAlerts(); // Fetch inventory alerts
   }, []);
 
   // Fetch orders
@@ -26,13 +45,13 @@ const CashierDashboard = () => {
       console.log('Orders:', response.data);
       setOrders(response.data);
       calculatePopularDishes(response.data);
-      
+
       // Calculate dashboard stats
       const today = new Date().toISOString().split('T')[0];
-      const todayOrders = response.data.filter(order => 
+      const todayOrders = response.data.filter(order =>
         order.createdTime.split('T')[0] === today
       );
-      const pendingOrders = response.data.filter(order => 
+      const pendingOrders = response.data.filter(order =>
         order.status === 'PENDING'
       );
 
@@ -52,10 +71,10 @@ const CashierDashboard = () => {
       const response = await api.get('/reservations');
       console.log('Reservations:', response.data);
       setReservations(response.data);
-      
+
       // Update reservations count
       const today = new Date().toISOString().split('T')[0];
-      const todayReservations = response.data.filter(reservation => 
+      const todayReservations = response.data.filter(reservation =>
         reservation.date === today
       );
 
@@ -94,7 +113,7 @@ const CashierDashboard = () => {
   // Calculate popular dishes
   const calculatePopularDishes = (orders) => {
     const dishCount = {};
-    
+
     // Count quantities of each dish from all orders
     orders.forEach(order => {
       order.items?.forEach(item => {
@@ -114,24 +133,24 @@ const CashierDashboard = () => {
 
   // Update the summary cards data
   const summaryCards = [
-    { 
-      title: "TODAY'S ORDERS", 
-      value: dashboardStats.todayOrders.toString(), 
-      subtext: "Orders Completed" 
+    {
+      title: "TODAY'S ORDERS",
+      value: dashboardStats.todayOrders.toString(),
+      subtext: "Orders Completed"
     },
-    { 
-      title: "PENDING ORDERS", 
-      value: dashboardStats.pendingOrders.toString(), 
-      subtext: "Need Attention" 
+    {
+      title: "PENDING ORDERS",
+      value: dashboardStats.pendingOrders.toString(),
+      subtext: "Need Attention"
     },
-    { 
-      title: "RESERVATIONS", 
-      value: dashboardStats.totalReservations.toString(), 
-      subtext: "Today's Bookings" 
+    {
+      title: "RESERVATIONS",
+      value: dashboardStats.totalReservations.toString(),
+      subtext: "Today's Bookings"
     },
-    { 
-      title: "POPULAR DISHES", 
-      chart: true 
+    {
+      title: "POPULAR DISHES",
+      chart: true
     }
   ];
 
@@ -149,7 +168,7 @@ const CashierDashboard = () => {
             <p className="text-base text-gray-400 font-medium">{formattedDate}</p>
           </div>
           <div className="flex items-center space-x-6">
-            
+
             <div className="flex items-center bg-[#1d2b2f] py-2 px-4 rounded-lg shadow-lg">
               <span className="text-xl font-medium mr-4 text-white">John Doe</span>
               <div className="w-12 h-12 bg-gradient-to-r from-orange-400 to-orange-600 rounded-full flex items-center justify-center shadow-lg">
@@ -169,16 +188,16 @@ const CashierDashboard = () => {
                   <div className="flex space-x-3 mt-4 items-end h-24 justify-between px-2">
                     {popularDishes.map((dish, i) => (
                       <div key={i} className="flex flex-col items-center w-1/6">
-                        <div 
+                        <div
                           className="w-full bg-gradient-to-t from-orange-600 to-orange-400 rounded-t-sm hover:from-orange-500 hover:to-orange-300 transition-all duration-300"
-                          style={{ 
+                          style={{
                             height: `${(dish.quantity / Math.max(...popularDishes.map(d => d.quantity))) * 80}px`
                           }}
                         />
                         <div className="text-xs text-gray-400 mt-2 rotate-45 origin-left truncate">
                           {dish.name}
                         </div>
-                        
+
                       </div>
                     ))}
                   </div>
@@ -192,7 +211,7 @@ const CashierDashboard = () => {
             </div>
           ))}
         </div>
-          {/* Action Buttons */}
+        {/* Action Buttons */}
         <div className="grid grid-cols-2 gap-6 mb-8">
           {[
             { title: "ADD MENU ITEM", icon: "➕" },
@@ -230,16 +249,45 @@ const CashierDashboard = () => {
                     </div>
                   </div>
                 ))}
-                              </div>
-            </div>
-            <div className="bg-[#1d2b2f] p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-800">
-              <h2 className="text-xl font-semibold text-white mb-2">Inventory Alerts</h2>
-              <div className="space-y-2">
-                <div className="flex items-center text-orange-400">
-                  <span className="mr-2">⚠️</span>
-                  <span>Low stock: Mushrooms, Tomatoes</span>
-                </div>
               </div>
+            </div>
+            
+            <div className="bg-[#1d2b2f] p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-800">
+              <h2 className="text-xl font-semibold text-white mb-4">Inventory Alerts</h2>
+              <div className="space-y-3">
+                {inventoryAlerts.length > 0 ? (
+                  inventoryAlerts.map((item) => (
+                    <div
+                      key={item.id}
+                      className="flex items-center justify-between bg-red-500/10 rounded-lg p-3 border border-red-500/20"
+                    >
+                      <div className="flex items-center">
+                        <span className="text-lg mr-2">⚠️</span>
+                        <div>
+                          <p className="text-orange-400 font-medium">{item.name}</p>
+                          <p className="text-sm text-gray-400">
+                            Quantity: {item.quantity} / Threshold: {item.threshold}
+                          </p>
+                        </div>
+                      </div>
+                      <span className="px-3 py-1 bg-red-500/20 text-red-400 rounded-full text-sm">
+                        Low Stock
+                      </span>
+                    </div>
+                  ))
+                ) : (
+                  <div className="text-center text-gray-400 py-4">
+                    No inventory alerts at this time
+                  </div>
+                )}
+              </div>
+              {inventoryAlerts.length > 0 && (
+                <div className="mt-4 pt-4 border-t border-gray-800">
+                  <p className="text-sm text-gray-400">
+                    Total alerts: {inventoryAlerts.length} items need attention
+                  </p>
+                </div>
+              )}
             </div>
           </div>
         </div>
