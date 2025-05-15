@@ -11,6 +11,7 @@ import MenuManagement from './pages/admin/menuManage';
 import StaffManage from './pages/admin/staffManage';
 import Login from './pages/login';
 import InventoryManagement from './pages/admin/inventoryManage';
+import Reservation from './pages/admin/reservation';
 function App() {
   const dispatch = useDispatch();
 
@@ -34,6 +35,7 @@ function App() {
         <Route path="/admin/menu" element={<MenuManagement />} />
         <Route path="/admin/staff" element={<StaffManage />} />
         <Route path="/admin/inventory" element={<InventoryManagement />} />
+        <Route path="/admin/reservation" element={<Reservation />} />
       </Route>
       <Route path="/unauthorized" element={<Unauthorized />} />
       
