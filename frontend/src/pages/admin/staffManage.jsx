@@ -104,103 +104,109 @@ const handleEdit = (staff) => {
 };
 
     return (
-        <div className="min-h-screen h-auto bg-neutral-900 text-white font-['Inter']">
-            <div className="w-full h-fit relative bg-zinc-900 rounded-2xl p-6">
-                {/* Header Section */}
-                <div className="mb-6">
-                    <h1 className="text-white text-2xl font-semibold">Staff Management</h1>
-                </div>
-
-                {/* Search and Add New User Section */}
-                <div className="flex justify-between items-center mb-6">
-                    <div className="relative">
-                        <input
-                            type="text"
-                            placeholder="Search Employee..."
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                            className="w-64 h-10 pl-10 pr-4 bg-zinc-800 text-white rounded-xl border border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-500"
-                        />
-                        <svg
-                            className="absolute left-3 top-3 h-5 w-5 text-gray-400"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                            xmlns="http://www.w3.org/2000/svg"
-                        >
-                            <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth="2"
-                                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                            />
-                        </svg>
+        <div className="min-h-screen h-auto bg-neutral-900 text-white font-['Inter'] p-8">
+            <div className="max-w-[1400px] mx-auto">
+                <div className="w-full h-fit bg-zinc-900 rounded-2xl p-8 shadow-lg">
+                    {/* Header Section */}
+                    <div className="mb-8">
+                        <h1 className="text-white text-3xl font-semibold">Staff Management</h1>
                     </div>
-                    <button
-                        onClick={() => {
-                            setSelectedStaff(null);
-                            setFormData({ username: '', email: '', role: '', password: '' });
-                            setShowModal(true);
-                        }}
-                        className="flex items-center bg-orange-400 hover:bg-orange-500 text-white font-bold py-2 px-4 rounded-lg"
-                    >
-                        <span className="mr-2 text-2xl">+</span> Add New User
-                    </button>
-                </div>
 
-                {/* Staff Table */}
-                <div className="overflow-x-auto">
-                    <table className="w-full text-left">
-                        <thead>
-                            <tr className="bg-zinc-800">
-                                <th className="p-4">ID</th>
-                                <th className="p-4">Name</th>
-                                <th className="p-4">Email</th>
-                                <th className="p-4">Role</th>
-                                <th className="p-4">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {filteredStaff.length > 0 ? (
-                                filteredStaff.map(staff => (
-                                    <tr key={staff.id} className="border-b border-zinc-700 hover:bg-zinc-800">
-                                        <td className="p-4">{staff.id}</td>
-                                        <td className="p-4">{staff.username || 'N/A'}</td>
-                                        <td className="p-4">{staff.email || 'N/A'}</td>
-                                        <td className="p-4">{staff.role || 'N/A'}</td>
-                                        <td className="p-4">
-                                            <button
-                                                onClick={() => handleEdit(staff)}
-                                                className="text-blue-400 hover:underline mr-4"
-                                            >
-                                                Edit
-                                            </button>
-                                            <button
-                                                onClick={() => handleDelete(staff.id)}
-                                                className="text-red-400 hover:underline"
-                                            >
-                                                Delete
-                                            </button>
+                    {/* Search and Add New User Section */}
+                    <div className="flex flex-col md:flex-row justify-between items-center gap-4 mb-8">
+                        <div className="relative w-full md:w-96">
+                            <input
+                                type="text"
+                                placeholder="Search Employee..."
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                                className="w-full h-12 pl-12 pr-4 bg-zinc-800 text-white rounded-xl border border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-500"
+                            />
+                            <svg
+                                className="absolute left-4 top-3.5 h-5 w-5 text-gray-400"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                                xmlns="http://www.w3.org/2000/svg"
+                            >
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth="2"
+                                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                                />
+                            </svg>
+                        </div>
+                        <button
+                            onClick={() => {
+                                setSelectedStaff(null);
+                                setFormData({ username: '', email: '', role: '', password: '' });
+                                setShowModal(true);
+                            }}
+                            className="w-full md:w-auto flex items-center justify-center bg-orange-400 hover:bg-orange-500 text-white font-bold py-3 px-6 rounded-xl transition duration-300 ease-in-out"
+                        >
+                            <span className="mr-2 text-2xl">+</span> Add New User
+                        </button>
+                    </div>
+
+                    {/* Staff Table */}
+                    <div className="overflow-x-auto bg-zinc-800/50 rounded-xl border border-zinc-700">
+                        <table className="w-full text-left">
+                            <thead>
+                                <tr className="bg-zinc-800">
+                                    <th className="p-5">ID</th>
+                                    <th className="p-5">Name</th>
+                                    <th className="p-5">Email</th>
+                                    <th className="p-5">Role</th>
+                                    <th className="p-5">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {filteredStaff.length > 0 ? (
+                                    filteredStaff.map(staff => (
+                                        <tr key={staff.id} className="border-b border-zinc-700 hover:bg-zinc-800/70 transition duration-200">
+                                            <td className="p-5">{staff.id}</td>
+                                            <td className="p-5">{staff.username || 'N/A'}</td>
+                                            <td className="p-5">{staff.email || 'N/A'}</td>
+                                            <td className="p-5">
+                                                <span className="px-3 py-1 rounded-full text-sm bg-zinc-700">
+                                                    {staff.role || 'N/A'}
+                                                </span>
+                                            </td>
+                                            <td className="p-5">
+                                                <button
+                                                    onClick={() => handleEdit(staff)}
+                                                    className="text-blue-400 hover:text-blue-300 mr-4 transition duration-200"
+                                                >
+                                                    Edit
+                                                </button>
+                                                <button
+                                                    onClick={() => handleDelete(staff.id)}
+                                                    className="text-red-400 hover:text-red-300 transition duration-200"
+                                                >
+                                                    Delete
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    ))
+                                ) : (
+                                    <tr>
+                                        <td colSpan="5" className="p-5 text-center text-gray-400">
+                                            No staff found.
                                         </td>
                                     </tr>
-                                ))
-                            ) : (
-                                <tr>
-                                    <td colSpan="5" className="p-4 text-center text-gray-400">
-                                        No staff found.
-                                    </td>
-                                </tr>
-                            )}
-                        </tbody>
-                    </table>
+                                )}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
 
-            {/* Modal for Add/Edit */}
+            {/* Update the Modal styling */}
             {showModal && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                    <div className="bg-zinc-900 p-6 rounded-xl w-96">
-                        <h2 className="text-xl font-semibold mb-4">
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+                    <div className="bg-zinc-900 p-8 rounded-xl w-full max-w-md border border-zinc-700 shadow-xl">
+                        <h2 className="text-2xl font-semibold mb-6">
                             {selectedStaff ? 'Edit Staff' : 'Add New Staff'}
                         </h2>
                         <input
@@ -209,7 +215,7 @@ const handleEdit = (staff) => {
                             value={formData.username}
                             onChange={handleInputChange}
                             placeholder="Username"
-                            className="w-full mb-4 p-2 bg-zinc-800 text-white rounded border border-zinc-700 focus:border-orange-500"
+                            className="w-full mb-4 p-3 bg-zinc-800 text-white rounded-lg border border-zinc-700 focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20"
                         />
                         <select
                             name="role"
