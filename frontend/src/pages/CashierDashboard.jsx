@@ -115,7 +115,7 @@ const AddMenuModal = ({ show, onClose, form, setForm, categories, onSubmit }) =>
           {/* Submit Button */}
           <button
             type="submit"
-            className="w-full bg-gradient-to-r from-orange-500 to-orange-600 text-white py-3 rounded-lg font-semibold hover:from-orange-600 hover:to-orange-700 transition-all duration-300"
+            className="w-full hover:cursor-pointer hover:scale-105 bg-gradient-to-r from-orange-500 to-orange-600 text-white py-3 rounded-lg font-semibold hover:from-orange-600 hover:to-orange-700 transition-all duration-300"
           >
             Add Menu Item
           </button>
@@ -125,8 +125,145 @@ const AddMenuModal = ({ show, onClose, form, setForm, categories, onSubmit }) =>
   );
 };
 
+// Add this component after AddMenuModal
+const AddReservationModal = ({ show, onClose }) => {
+  const [newReservation, setNewReservation] = useState({
+    customerName: '',
+    contactNumber: '',
+    date: '',
+    time: '',
+    numberOfGuests: 0,
+    tableNumber: 0,
+    status: 'PENDING'
+  });
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      await api.post('/reservations', newReservation);
+      onClose();
+      // Reset form
+      setNewReservation({
+        customerName: '',
+        contactNumber: '',
+        date: '',
+        time: '',
+        numberOfGuests: 0,
+        tableNumber: 0,
+        status: 'PENDING'
+      });
+      alert('Reservation added successfully!');
+    } catch (error) {
+      console.error('Error adding reservation:', error);
+    }
+  };
+
+  if (!show) return null;
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div className="bg-[#1d2b2f] rounded-xl p-8 w-[500px] max-h-[90vh] overflow-y-auto">
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-2xl font-bold text-white">Add New Reservation</h2>
+          <button 
+            onClick={onClose}
+            className="text-gray-400 hover:text-white"
+          >
+            ✕
+          </button>
+        </div>
+
+        <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Customer Name */}
+          <div>
+            <label className="block text-gray-400 mb-2">Customer Name</label>
+            <input
+              type="text"
+              value={newReservation.customerName}
+              onChange={(e) => setNewReservation({...newReservation, customerName: e.target.value})}
+              className="w-full bg-[#141E20] text-white rounded-lg p-3 border border-gray-700 focus:border-orange-500 focus:outline-none"
+              required
+            />
+          </div>
+
+          {/* Contact Number */}
+          <div>
+            <label className="block text-gray-400 mb-2">Contact Number</label>
+            <input
+              type="tel"
+              value={newReservation.contactNumber}
+              onChange={(e) => setNewReservation({...newReservation, contactNumber: e.target.value})}
+              className="w-full bg-[#141E20] text-white rounded-lg p-3 border border-gray-700 focus:border-orange-500 focus:outline-none"
+              required
+            />
+          </div>
+
+          {/* Date and Time Row */}
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-gray-400 mb-2">Date</label>
+              <input
+                type="date"
+                value={newReservation.date}
+                onChange={(e) => setNewReservation({...newReservation, date: e.target.value})}
+                className="w-full bg-[#141E20] text-white rounded-lg p-3 border border-gray-700 focus:border-orange-500 focus:outline-none"
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-gray-400 mb-2">Time</label>
+              <input
+                type="time"
+                value={newReservation.time}
+                onChange={(e) => setNewReservation({...newReservation, time: e.target.value})}
+                className="w-full bg-[#141E20] text-white rounded-lg p-3 border border-gray-700 focus:border-orange-500 focus:outline-none"
+                required
+              />
+            </div>
+          </div>
+
+          {/* Number of Guests and Table Number Row */}
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-gray-400 mb-2">Number of Guests</label>
+              <input
+                type="number"
+                min="1"
+                value={newReservation.numberOfGuests}
+                onChange={(e) => setNewReservation({...newReservation, numberOfGuests: parseInt(e.target.value)})}
+                className="w-full bg-[#141E20] text-white rounded-lg p-3 border border-gray-700 focus:border-orange-500 focus:outline-none"
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-gray-400 mb-2">Table Number</label>
+              <input
+                type="number"
+                min="1"
+                value={newReservation.tableNumber}
+                onChange={(e) => setNewReservation({...newReservation, tableNumber: parseInt(e.target.value)})}
+                className="w-full bg-[#141E20] text-white rounded-lg p-3 border border-gray-700 focus:border-orange-500 focus:outline-none"
+                required
+              />
+            </div>
+          </div>
+
+          {/* Submit Button */}
+          <button
+            type="submit"
+            className="w-full hover:scale-105 hover:cursor-pointer bg-gradient-to-r from-orange-500 to-orange-600 text-white py-3 rounded-lg font-semibold hover:from-orange-600 hover:to-orange-700 transition-all duration-300"
+          >
+            Add Reservation
+          </button>
+        </form>
+      </div>
+    </div>
+  );
+};
 const CashierDashboard = () => {
   // State management
+  const [showReservationModal, setShowReservationModal] = useState(false);
+
   const [orders, setOrders] = useState([]);
   const [reservations, setReservations] = useState([]);
   const [popularDishes, setPopularDishes] = useState([]);
@@ -367,21 +504,29 @@ const CashierDashboard = () => {
 
         {/* Action Buttons */}
         <div className="grid grid-cols-2 gap-6 mb-8">
-          {[
-            { title: "ADD MENU ITEM", icon: "➕", onClick: () => setShowAddMenuModal(true) },
-            { title: "ADD RESERVATION", icon: "📅", onClick: () => {/* your reservation handler */} }
-          ].map((button, index) => (
-            <div key={index} className="bg-[#1d2b2f] rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-800">
-              <button 
-                onClick={button.onClick}
-                className="w-full hover:cursor-pointer p-6 flex items-center justify-center space-x-3"
-              >
-                <span className="text-2xl">{button.icon}</span>
-                <span className="text-lg font-semibold text-orange-400">{button.title}</span>
-              </button>
-            </div>
-          ))}
-        </div>
+  {[
+    { 
+      title: "ADD MENU ITEM", 
+      icon: "➕", 
+      onClick: () => setShowAddMenuModal(true) 
+    },
+    { 
+      title: "ADD RESERVATION", 
+      icon: "📅", 
+      onClick: () => setShowReservationModal(true) 
+    }
+  ].map((button, index) => (
+    <div key={index} className="bg-[#1d2b2f] rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-800">
+      <button 
+        onClick={button.onClick}
+        className="w-full p-6 flex hover:cursor-pointer items-center justify-center space-x-3"
+      >
+        <span className="text-2xl">{button.icon}</span>
+        <span className="text-lg font-semibold text-orange-400">{button.title}</span>
+      </button>
+    </div>
+  ))}
+</div>
 
         {/* Add the modal component */}
         <AddMenuModal
@@ -392,7 +537,10 @@ const CashierDashboard = () => {
           categories={categories}
           onSubmit={handleAddMenuItem}
         />
-
+  <AddReservationModal 
+  show={showReservationModal}
+  onClose={() => setShowReservationModal(false)}
+/>
         {/* Bottom Grid */}
         <div className="grid grid-cols-2 gap-6">
           <div className="bg-[#1d2b2f] p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-800">
