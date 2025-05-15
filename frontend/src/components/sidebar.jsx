@@ -21,7 +21,7 @@ const Sidebar = () => {
       { icon: '/logout.svg', text: 'logout', link: '#' },
     ],
     CASHIER: [
-      { icon: '/dashboardIcon.svg', text: 'Dashboard', link: '#' },
+      { icon: '/dashboardIcon.svg', text: 'Dashboard', link: '/cashier' },
       { icon: '/orderIcon.svg', text: 'Orders', link: '#' },
       { icon: '/menuIcon.svg', text: 'Menu', link: '#' },
       { icon: '/reservationIcon.svg', text: 'Reservation', link: '#' },
