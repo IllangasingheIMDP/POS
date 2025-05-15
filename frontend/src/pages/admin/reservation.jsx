@@ -25,31 +25,31 @@ const Reservation = () => {
     fetchReservations();
     fetchTables();
   }, []);
-const fetchTables = async () => {
-  try {
-    const response = await api.get('/tables');
-    setTables(response.data);
-  } catch (error) {
-    console.error('Error fetching tables:', error);
-  }
-};
-const handleReservationStatusChange = async (reservationId, newStatus) => {
-  try {
-    await api.put(`/reservations/${reservationId}/status`, { status: newStatus });
-    fetchReservations(); // Refresh the list
-  } catch (error) {
-    console.error('Error updating reservation status:', error);
-  }
-};
+  const fetchTables = async () => {
+    try {
+      const response = await api.get('/tables');
+      setTables(response.data);
+    } catch (error) {
+      console.error('Error fetching tables:', error);
+    }
+  };
+  const handleReservationStatusChange = async (reservationId, newStatus) => {
+    try {
+      await api.put(`/reservations/${reservationId}/status`, { status: newStatus });
+      fetchReservations(); // Refresh the list
+    } catch (error) {
+      console.error('Error updating reservation status:', error);
+    }
+  };
 
-const handleTableStatusChange = async (tableId, newStatus) => {
-  try {
-    await api.put(`/tables/${tableId}/status`, { status: newStatus });
-    fetchTables(); // Refresh the list
-  } catch (error) {
-    console.error('Error updating table status:', error);
-  }
-};
+  const handleTableStatusChange = async (tableId, newStatus) => {
+    try {
+      await api.put(`/tables/${tableId}/status`, { status: newStatus });
+      fetchTables(); // Refresh the list
+    } catch (error) {
+      console.error('Error updating table status:', error);
+    }
+  };
   const fetchReservations = async () => {
     try {
       const response = await api.get('/reservations');
@@ -163,7 +163,7 @@ const handleTableStatusChange = async (tableId, newStatus) => {
           <div className="flex flex-col justify-end">
             <button
               onClick={handleSearch}
-              className="bg-orange-400 hover:bg-orange-500 text-white rounded-lg p-2 text-sm font-medium transition-colors duration-200"
+              className="bg-orange-400  hover:cursor-pointer hover:bg-orange-500 text-white rounded-lg p-2 text-sm font-medium transition-colors duration-200"
             >
               Search
             </button>
@@ -213,7 +213,7 @@ const handleTableStatusChange = async (tableId, newStatus) => {
         <div className="mt-6">
           <button
             onClick={() => setShowModal(true)}
-            className="bg-orange-400 hover:bg-orange-500 text-white rounded-lg px-4 py-2 text-sm font-medium transition-colors duration-200"
+            className="bg-orange-400  hover:cursor-pointer hover:bg-orange-500 text-white rounded-lg px-4 py-2 text-sm font-medium transition-colors duration-200"
           >
             Add New Reservation
           </button>
@@ -221,144 +221,153 @@ const handleTableStatusChange = async (tableId, newStatus) => {
 
         {/* Modal */}
         {showModal && (
-  <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-    <div className="bg-zinc-900 p-6 rounded-lg w-96 max-w-md">
-      <h2 className="text-white text-lg font-semibold mb-4">Add New Reservation</h2>
-      <div className="space-y-4">
-        <div className="flex flex-col gap-1">
-          <label htmlFor="customerName" className="text-white text-sm font-medium">
-            Customer Name
-          </label>
-          <input
-            id="customerName"
-            type="text"
-            value={newReservation.customerName}
-            onChange={(e) => setNewReservation({ ...newReservation, customerName: e.target.value })}
-            className="bg-zinc-800 border border-orange-400 rounded-lg p-2 w-full text-sm text-white focus:outline-none focus:ring-2 focus:ring-orange-400"
-          />
-        </div>
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+            <div className="bg-zinc-900 p-6 rounded-lg w-96 max-w-md">
+              <h2 className="text-white text-lg font-semibold mb-4">Add New Reservation</h2>
+              <div className="space-y-4">
+                <div className="flex flex-col gap-1">
+                  <label htmlFor="customerName" className="text-white text-sm font-medium">
+                    Customer Name
+                  </label>
+                  <input
+                    id="customerName"
+                    type="text"
+                    value={newReservation.customerName}
+                    onChange={(e) => setNewReservation({ ...newReservation, customerName: e.target.value })}
+                    className="bg-zinc-800 border border-orange-400 rounded-lg p-2 w-full text-sm text-white focus:outline-none focus:ring-2 focus:ring-orange-400"
+                  />
+                </div>
 
-        <div className="flex flex-col gap-1">
-          <label htmlFor="contactNumber" className="text-white text-sm font-medium">
-            Contact Number
-          </label>
-          <input
-            id="contactNumber"
-            type="text"
-            value={newReservation.contactNumber}
-            onChange={(e) => setNewReservation({ ...newReservation, contactNumber: e.target.value })}
-            className="bg-zinc-800 border border-orange-400 rounded-lg p-2 w-full text-sm text-white focus:outline-none focus:ring-2 focus:ring-orange-400"
-          />
-        </div>
+                <div className="flex flex-col gap-1">
+                  <label htmlFor="contactNumber" className="text-white text-sm font-medium">
+                    Contact Number
+                  </label>
+                  <input
+                    id="contactNumber"
+                    type="text"
+                    value={newReservation.contactNumber}
+                    onChange={(e) => setNewReservation({ ...newReservation, contactNumber: e.target.value })}
+                    className="bg-zinc-800 border border-orange-400 rounded-lg p-2 w-full text-sm text-white focus:outline-none focus:ring-2 focus:ring-orange-400"
+                  />
+                </div>
 
-        <div className="flex flex-col gap-1">
-          <label htmlFor="date" className="text-white text-sm font-medium">
-            Date
-          </label>
-          <input
-            id="date"
-            type="date"
-            value={newReservation.date}
-            onChange={(e) => setNewReservation({ ...newReservation, date: e.target.value })}
-            className="bg-zinc-800 border border-orange-400 rounded-lg p-2 w-full text-sm text-white focus:outline-none focus:ring-2 focus:ring-orange-400"
-          />
-        </div>
+                <div className="flex flex-col gap-1">
+                  <label htmlFor="date" className="text-white text-sm font-medium">
+                    Date
+                  </label>
+                  <input
+                    id="date"
+                    type="date"
+                    value={newReservation.date}
+                    onChange={(e) => setNewReservation({ ...newReservation, date: e.target.value })}
+                    className="bg-zinc-800 border border-orange-400 rounded-lg p-2 w-full text-sm text-white focus:outline-none focus:ring-2 focus:ring-orange-400"
+                  />
+                </div>
 
-        <div className="flex flex-col gap-1">
-          <label htmlFor="time" className="text-white text-sm font-medium">
-            Time
-          </label>
-          <input
-            id="time"
-            type="time"
-            value={newReservation.time}
-            onChange={(e) => setNewReservation({ ...newReservation, time: e.target.value })}
-            className="bg-zinc-800 border border-orange-400 rounded-lg p-2 w-full text-sm text-white focus:outline-none focus:ring-2 focus:ring-orange-400"
-          />
-        </div>
+                <div className="flex flex-col gap-1">
+                  <label htmlFor="time" className="text-white text-sm font-medium">
+                    Time
+                  </label>
+                  <input
+                    id="time"
+                    type="time"
+                    value={newReservation.time}
+                    onChange={(e) => setNewReservation({ ...newReservation, time: e.target.value })}
+                    className="bg-zinc-800 border border-orange-400 rounded-lg p-2 w-full text-sm text-white focus:outline-none focus:ring-2 focus:ring-orange-400"
+                  />
+                </div>
 
-        <div className="flex flex-col gap-1">
-          <label htmlFor="numberOfGuests" className="text-white text-sm font-medium">
-            Number of Guests
-          </label>
-          <input
-            id="numberOfGuests"
-            type="number"
-            value={newReservation.numberOfGuests}
-            onChange={(e) => setNewReservation({
-              ...newReservation,
-              numberOfGuests: parseInt(e.target.value) || 0,
-            })}
-            className="bg-zinc-800 border border-orange-400 rounded-lg p-2 w-full text-sm text-white focus:outline-none focus:ring-2 focus:ring-orange-400"
-          />
-        </div>
+                <div className="flex flex-col gap-1">
+                  <label htmlFor="numberOfGuests" className="text-white text-sm font-medium">
+                    Number of Guests
+                  </label>
+                  <input
+                    id="numberOfGuests"
+                    type="number"
+                    value={newReservation.numberOfGuests}
+                    onChange={(e) => setNewReservation({
+                      ...newReservation,
+                      numberOfGuests: parseInt(e.target.value) || 0,
+                    })}
+                    className="bg-zinc-800 border border-orange-400 rounded-lg p-2 w-full text-sm text-white focus:outline-none focus:ring-2 focus:ring-orange-400"
+                  />
+                </div>
 
-        <div className="flex flex-col gap-1">
-          <label htmlFor="tableNumber" className="text-white text-sm font-medium">
-            Table Number
-          </label>
-          <input
-            id="tableNumber"
-            type="number"
-            value={newReservation.tableNumber}
-            onChange={(e) => setNewReservation({
-              ...newReservation,
-              tableNumber: parseInt(e.target.value) || 0,
-            })}
-            className="bg-zinc-800 border border-orange-400 rounded-lg p-2 w-full text-sm text-white focus:outline-none focus:ring-2 focus:ring-orange-400"
-          />
-        </div>
+        
+                <div className="flex flex-col gap-1">
+                  <label htmlFor="tableNumber" className="text-white text-sm font-medium">
+                    Table Number
+                  </label>
+                  <select
+                    id="tableNumber"
+                    value={newReservation.tableNumber}
+                    onChange={(e) => setNewReservation({
+                      ...newReservation,
+                      tableNumber: parseInt(e.target.value)
+                    })}
+                    className="bg-zinc-800 border border-orange-400 rounded-lg p-2 w-full text-sm text-white focus:outline-none focus:ring-2 focus:ring-orange-400"
+                    required
+                  >
+                    <option value="">Select Table</option>
+                    {tables
+                      .filter(table => table.status === 'AVAILABLE')
+                      .map(table => (
+                        <option key={table.id} value={table.tableNumber}>
+                          Table {table.tableNumber} (Capacity: {table.capacity})
+                        </option>
+                      ))}
+                  </select>
+                </div>
 
-        <div className="flex flex-col gap-1">
-          <label htmlFor="status" className="text-white text-sm font-medium">
-            Status
-          </label>
-          <select
-            id="status"
-            value={newReservation.status}
-            onChange={(e) => setNewReservation({ ...newReservation, status: e.target.value })}
-            className="bg-zinc-800 border border-orange-400 rounded-lg p-2 w-full text-sm text-white focus:outline-none focus:ring-2 focus:ring-orange-400"
-          >
-            <option value="PENDING">PENDING</option>
-            <option value="CONFIRMED">CONFIRMED</option>
-            <option value="CANCELLED">CANCELLED</option>
-          </select>
-        </div>
+                <div className="flex flex-col gap-1">
+                  <label htmlFor="status" className="text-white text-sm font-medium">
+                    Status
+                  </label>
+                  <select
+                    id="status"
+                    value={newReservation.status}
+                    onChange={(e) => setNewReservation({ ...newReservation, status: e.target.value })}
+                    className="bg-zinc-800 border border-orange-400 rounded-lg p-2 w-full text-sm text-white focus:outline-none focus:ring-2 focus:ring-orange-400"
+                  >
+                    <option value="PENDING">PENDING</option>
+                    <option value="CONFIRMED">CONFIRMED</option>
+                    <option value="CANCELLED">CANCELLED</option>
+                  </select>
+                </div>
 
-        <div className="flex justify-end space-x-2 mt-6">
-          <button
-            onClick={() => setShowModal(false)}
-            className="bg-zinc-700 hover:bg-zinc-600 text-white rounded-lg px-4 py-2 text-sm transition-colors duration-200"
-          >
-            Cancel
-          </button>
-          <button
-            onClick={handleAddReservation}
-            className="bg-orange-400 hover:bg-orange-500 text-white rounded-lg px-4 py-2 text-sm transition-colors duration-200"
-          >
-            Add
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-)}
+                <div className="flex justify-end space-x-2 mt-6">
+                  <button
+                    onClick={() => setShowModal(false)}
+                    className="bg-zinc-700 hover:cursor-pointer hover:bg-zinc-600 text-white rounded-lg px-4 py-2 text-sm transition-colors duration-200"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={handleAddReservation}
+                    className="bg-orange-400 hover:bg-orange-500 text-white rounded-lg px-4 py-2 text-sm transition-colors duration-200"
+                  >
+                    Add
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
         {/* Tables Section */}
         <div className="mt-8">
           <h2 className="text-white text-lg font-semibold mb-4">Tables Status</h2>
           <div className="grid grid-cols-4 gap-4">
             {tables.map((table) => (
-              <div 
+              <div
                 key={table.id}
                 className="bg-zinc-800 p-4 rounded-lg border border-orange-400"
               >
                 <div className="flex justify-between items-center mb-2">
                   <h3 className="text-white font-medium">Table {table.tableNumber}</h3>
-                  <span className={`px-2 py-1 rounded-full text-xs ${
-                    table.status === 'AVAILABLE' ? 'bg-green-500/20 text-green-400' :
-                    table.status === 'OCCUPIED' ? 'bg-red-500/20 text-red-400' :
-                    'bg-yellow-500/20 text-yellow-400'
-                  }`}>
+                  <span className={`px-2 py-1 rounded-full text-xs ${table.status === 'AVAILABLE' ? 'bg-green-500/20 text-green-400' :
+                      table.status === 'OCCUPIED' ? 'bg-red-500/20 text-red-400' :
+                        'bg-yellow-500/20 text-yellow-400'
+                    }`}>
                     {table.status}
                   </span>
                 </div>

@@ -159,24 +159,24 @@ const ChefDashboard = () => {
               <div className="flex space-x-4">
                 {order.status === 'Pending' && (
                   <>
-                    <button className="flex items-center text-green-400 hover:text-green-300">
+                    <button className="flex items-center hover:cursor-pointer  text-green-400 hover:text-green-300">
                       <div className="w-2 h-2 bg-green-400 rounded-full mr-2" />
                       Accept
                     </button>
-                    <button className="flex items-center text-red-400 hover:text-red-300">
+                    <button className="flex items-center hover:cursor-pointer  text-red-400 hover:text-red-300">
                       <div className="w-2 h-2 bg-red-400 rounded-full mr-2" />
                       Cancel
                     </button>
                   </>
                 )}
                 {order.status === 'In prep' && (
-                  <button className="text-blue-400 hover:text-blue-300">Mark Done</button>
+                  <button className="text-blue-400 hover:cursor-pointer  hover:text-blue-300">Mark Done</button>
                 )}
                 {order.status === 'New' && (
-                  <button className="text-green-400 hover:text-green-300">Start Cooking</button>
+                  <button className="text-green-400 hover:cursor-pointer  hover:text-green-300">Start Cooking</button>
                 )}
                 {order.status === 'Done' && (
-                  <button className="text-gray-400 hover:text-gray-300">View Details</button>
+                  <button className="text-gray-400 hover:cursor-pointer  hover:text-gray-300">View Details</button>
                 )}
               </div>
             </div>

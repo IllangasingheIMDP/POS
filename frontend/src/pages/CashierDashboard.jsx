@@ -126,7 +126,7 @@ const AddMenuModal = ({ show, onClose, form, setForm, categories, onSubmit }) =>
 };
 
 // Add this component after AddMenuModal
-const AddReservationModal = ({ show, onClose }) => {
+const AddReservationModal = ({ show, onClose,tables }) => {
   const [newReservation, setNewReservation] = useState({
     customerName: '',
     contactNumber: '',
@@ -167,7 +167,7 @@ const AddReservationModal = ({ show, onClose }) => {
           <h2 className="text-2xl font-bold text-white">Add New Reservation</h2>
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-white"
+            className="text-gray-400  hover:cursor-pointer hover:text-white"
           >
             ✕
           </button>
@@ -237,14 +237,21 @@ const AddReservationModal = ({ show, onClose }) => {
             </div>
             <div>
               <label className="block text-gray-400 mb-2">Table Number</label>
-              <input
-                type="number"
-                min="1"
+              <select
                 value={newReservation.tableNumber}
                 onChange={(e) => setNewReservation({ ...newReservation, tableNumber: parseInt(e.target.value) })}
                 className="w-full bg-[#141E20] text-white rounded-lg p-3 border border-gray-700 focus:border-orange-500 focus:outline-none"
                 required
-              />
+              >
+                <option value="">Select Table</option>
+                {tables
+                  .filter(table => table.status === 'AVAILABLE')
+                  .map(table => (
+                    <option key={table.id} value={table.tableNumber}>
+                      Table {table.tableNumber} (Capacity: {table.capacity})
+                    </option>
+                  ))}
+              </select>
             </div>
           </div>
 
@@ -306,18 +313,34 @@ const CashierDashboard = () => {
   };
 
   // Add this to your useEffect
+  // Add this to your state declarations in CashierDashboard
+  const [tables, setTables] = useState([]);
+
+  // Add this function with other fetch functions
+  const fetchTables = async () => {
+    try {
+      const response = await api.get('/tables');
+      console.log('Tables:', response.data);
+      setTables(response.data);
+    } catch (error) {
+      console.error('Error fetching tables:', error);
+    }
+  };
+
+  // Add fetchTables to your useEffect
   useEffect(() => {
     fetchOrders();
     fetchReservations();
     fetchInventoryAlerts();
     fetchCategories();
-    fetchInventoryList(); // Add this line
+    fetchInventoryList();
+    fetchTables(); // Add this line
   }, []);
 
   // Add this function to handle inventory updates
   const handleInventoryUpdate = async () => {
     try {
-      const response=await api.put(`/inventory/${selectedInventoryItem.id}`, {
+      const response = await api.put(`/inventory/${selectedInventoryItem.id}`, {
         ...selectedInventoryItem,
         ...inventoryFormData
       });
@@ -577,6 +600,7 @@ const CashierDashboard = () => {
         <AddReservationModal
           show={showReservationModal}
           onClose={() => setShowReservationModal(false)}
+          tables={tables}
         />
         {/* Bottom Grid */}
         <div className="grid grid-cols-2 gap-6">
@@ -603,8 +627,8 @@ const CashierDashboard = () => {
                       <td className="py-3 text-white">{item.quantity}</td>
                       <td className="py-3">
                         <span className={`px-2 py-1 rounded-full text-xs ${item.quantity <= item.threshold
-                            ? 'bg-red-500/20 text-red-400'
-                            : 'bg-green-500/20 text-green-400'
+                          ? 'bg-red-500/20 text-red-400'
+                          : 'bg-green-500/20 text-green-400'
                           }`}>
                           {item.quantity <= item.threshold ? 'Low Stock' : 'In Stock'}
                         </span>
@@ -639,7 +663,7 @@ const CashierDashboard = () => {
                   </h3>
                   <button
                     onClick={() => setShowInventoryModal(false)}
-                    className="text-gray-400 hover:text-white"
+                    className="text-gray-400 hover:cursor-pointer hover:text-white"
                   >
                     ✕
                   </button>
@@ -676,7 +700,7 @@ const CashierDashboard = () => {
 
                   <button
                     onClick={handleInventoryUpdate}
-                    className="w-full bg-gradient-to-r from-orange-500 to-orange-600 text-white py-3 rounded-lg font-semibold hover:from-orange-600 hover:to-orange-700 transition-all duration-300"
+                    className="w-full bg-gradient-to-r  hover:cursor-pointer from-orange-500 to-orange-600 text-white py-3 rounded-lg font-semibold hover:from-orange-600 hover:to-orange-700 transition-all duration-300"
                   >
                     Update Inventory
                   </button>

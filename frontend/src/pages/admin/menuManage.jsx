@@ -107,7 +107,7 @@ const MenuManagement = () => {
                         <button
                             key={category.id}
                             onClick={() => setSelectedCategory(category.name)}
-                            className={`relative px-4 py-2 transition-all duration-300 ${selectedCategory === category.name
+                            className={`relative px-4 hover:cursor-pointer py-2 transition-all duration-300 ${selectedCategory === category.name
                                 ? 'text-orange-400'
                                 : 'text-white hover:text-orange-300'
                                 }`}
@@ -161,7 +161,7 @@ const MenuManagement = () => {
                                 <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
                                     <button
                                         onClick={() => handleDelete(item.id)}
-                                        className="p-2 rounded-full bg-zinc-900/80 hover:bg-red-500/20"
+                                        className="p-2 hover:cursor-pointer rounded-full bg-zinc-900/80 hover:bg-red-500/20"
                                     >
                                         <img src="/delete.png" className="w-5 h-5" alt="delete menu item" />
                                     </button>
@@ -184,7 +184,7 @@ const MenuManagement = () => {
                                         setShowEditModal(true);
                                     }}
                                     className="absolute bottom-0 w-full py-4 bg-zinc-900/90 backdrop-blur-sm rounded-b-xl 
-                 flex items-center justify-center gap-2 text-orange-400 font-medium
+                 flex items-center justify-center hover:cursor-pointer gap-2 text-orange-400 font-medium
                  transition-all duration-300 hover:bg-orange-500 hover:text-white"
                                 >
                                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -205,7 +205,7 @@ const MenuManagement = () => {
                     <button
                         onClick={() => setHasChanges(false)}
                         className="px-8 py-3 bg-zinc-800 text-orange-400 text-base font-medium rounded-lg
-                 border border-orange-500/30 transition-all duration-300
+                 border border-orange-500/30 hover:cursor-pointer transition-all duration-300
                  hover:border-orange-500 hover:bg-orange-500/10"
                     >
                         Discard Changes
@@ -365,14 +365,14 @@ const AddModal = ({ onClose, onSave, categories }) => {
                         <button 
                             onClick={onClose} 
                             className="px-6 py-2.5 rounded-lg border border-zinc-600 text-zinc-400 
-                             hover:text-white hover:border-zinc-500 transition-all duration-300"
+                             hover:text-white hover:cursor-pointer hover:border-zinc-500 transition-all duration-300"
                         >
                             Cancel
                         </button>
                         <button 
                             onClick={handleSubmit} 
                             className="px-6 py-2.5 rounded-lg bg-orange-500 text-white
-                             hover:bg-orange-600 transition-all duration-300 
+                             hover:bg-orange-600 hover:cursor-pointer transition-all duration-300
                              disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                             Add
@@ -428,8 +428,8 @@ const CategoryModal = ({ categories, onClose, onAdd, onEdit, onDelete }) => {
                         className="w-full p-2 rounded bg-neutral-900 text-white"
                     />
                     <div className="flex justify-end space-x-2">
-                        <button type="button" onClick={onClose} className="px-4 py-2 bg-neutral-900 text-orange-500 rounded">Close</button>
-                        <button type="submit" className="px-4 py-2 bg-orange-500 text-white rounded">
+                        <button type="button" onClick={onClose} className="px-4 hover:cursor-pointer py-2 bg-neutral-900 text-orange-500 rounded">Close</button>
+                        <button type="submit" className="px-4 hover:cursor-pointer py-2 bg-orange-500 text-white rounded">
                             {editId ? 'Update' : 'Add'}
                         </button>
                     </div>
@@ -542,7 +542,7 @@ const EditModal = ({ item, onClose, onSave, categories }) => {
                     <div className="flex justify-end space-x-4 mt-8">
                         <button 
                             onClick={onClose} 
-                            className="px-6 py-2.5 rounded-lg border border-zinc-600 text-zinc-400 
+                            className="px-6 py-2.5 rounded-lg hover:cursor-pointer border border-zinc-600 text-zinc-400 
                              hover:text-white hover:border-zinc-500 transition-all duration-300"
                         >
                             Cancel
@@ -550,7 +550,7 @@ const EditModal = ({ item, onClose, onSave, categories }) => {
                         <button 
                             onClick={handleSubmit} 
                             className="px-6 py-2.5 rounded-lg bg-orange-500 text-white
-                             hover:bg-orange-600 transition-all duration-300 
+                             hover:bg-orange-600 hover:cursor-pointer transition-all duration-300
                              disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                             Save
