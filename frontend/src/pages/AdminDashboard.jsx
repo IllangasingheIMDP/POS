@@ -98,7 +98,7 @@ const AdminDashboard = () => {
         <div className="grid grid-cols-2 gap-6">
           <div className="bg-zinc-900 p-6 rounded-md">
             <h2 className="text-2xl font-semibold mb-4">Order Report</h2>
-            <button className="mb-4 px-4 py-2 bg-neutral-900 rounded-[10px] border border-white">
+            <button className="mb-4 px-4 py-2 bg-neutral-900 hover:cursor-pointer  rounded-[10px] border border-white">
               Filter Order
             </button>
             <div className="grid grid-cols-4 gap-4 text-sm">
@@ -195,7 +195,7 @@ const AdminDashboard = () => {
                 </div>
               </div>
             </div>
-            <button className="w-full mt-6 px-4 py-2 bg-orange-400 rounded-[10px] text-center">
+            <button className="w-full mt-6 px-4 py-2 hover:cursor-pointer  bg-orange-400 rounded-[10px] text-center">
               View All
             </button>
           </div>

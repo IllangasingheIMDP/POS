@@ -97,7 +97,7 @@ const Login = () => {
             )}
             <button
               type="submit"
-              className="w-full h-16 bg-orange-400 rounded-[35px] text-2xl font-bold text-black font-['Inter'] hover:bg-orange-500 transition-colors"
+              className="w-full h-16 bg-orange-400 hover:cursor-pointer  rounded-[35px] text-2xl font-bold text-black font-['Inter'] hover:bg-orange-500 transition-colors"
             >
               Login
             </button>

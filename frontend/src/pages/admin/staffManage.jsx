@@ -143,7 +143,7 @@ const handleEdit = (staff) => {
                                 setFormData({ username: '', email: '', role: '', password: '' });
                                 setShowModal(true);
                             }}
-                            className="w-full md:w-auto flex items-center justify-center bg-orange-400 hover:bg-orange-500 text-white font-bold py-3 px-6 rounded-xl transition duration-300 ease-in-out"
+                            className="w-full  hover:cursor-pointer md:w-auto flex items-center justify-center bg-orange-400 hover:bg-orange-500 text-white font-bold py-3 px-6 rounded-xl transition duration-300 ease-in-out"
                         >
                             <span className="mr-2 text-2xl">+</span> Add New User
                         </button>
@@ -176,13 +176,13 @@ const handleEdit = (staff) => {
                                             <td className="p-5">
                                                 <button
                                                     onClick={() => handleEdit(staff)}
-                                                    className="text-blue-400 hover:text-blue-300 mr-4 transition duration-200"
+                                                    className="text-blue-400 hover:cursor-pointer hover:text-blue-300 mr-4 transition duration-200"
                                                 >
                                                     Edit
                                                 </button>
                                                 <button
                                                     onClick={() => handleDelete(staff.id)}
-                                                    className="text-red-400 hover:text-red-300 transition duration-200"
+                                                    className="text-red-400 hover:cursor-pointer hover:text-red-300 transition duration-200"
                                                 >
                                                     Delete
                                                 </button>
@@ -251,13 +251,13 @@ const handleEdit = (staff) => {
                         <div className="flex justify-end space-x-4">
                             <button
                                 onClick={() => setShowModal(false)}
-                                className="px-4 py-2 bg-zinc-700 hover:bg-zinc-600 text-white rounded"
+                                className="px-4 py-2 bg-zinc-700 hover:bg-zinc-600 hover:cursor-pointer  text-white rounded"
                             >
                                 Cancel
                             </button>
                             <button
                                 onClick={handleSave}
-                                className="px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded"
+                                className="px-4 py-2 bg-orange-500 hover:bg-orange-600 hover:cursor-pointer  text-white rounded"
                             >
                                 {selectedStaff ? 'Update' : 'Save'}
                             </button>

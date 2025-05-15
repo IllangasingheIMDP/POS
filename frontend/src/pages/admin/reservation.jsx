@@ -163,7 +163,7 @@ const Reservation = () => {
           <div className="flex flex-col justify-end">
             <button
               onClick={handleSearch}
-              className="bg-orange-400 hover:bg-orange-500 text-white rounded-lg p-2 text-sm font-medium transition-colors duration-200"
+              className="bg-orange-400  hover:cursor-pointer hover:bg-orange-500 text-white rounded-lg p-2 text-sm font-medium transition-colors duration-200"
             >
               Search
             </button>
@@ -213,7 +213,7 @@ const Reservation = () => {
         <div className="mt-6">
           <button
             onClick={() => setShowModal(true)}
-            className="bg-orange-400 hover:bg-orange-500 text-white rounded-lg px-4 py-2 text-sm font-medium transition-colors duration-200"
+            className="bg-orange-400  hover:cursor-pointer hover:bg-orange-500 text-white rounded-lg px-4 py-2 text-sm font-medium transition-colors duration-200"
           >
             Add New Reservation
           </button>
@@ -338,7 +338,7 @@ const Reservation = () => {
                 <div className="flex justify-end space-x-2 mt-6">
                   <button
                     onClick={() => setShowModal(false)}
-                    className="bg-zinc-700 hover:bg-zinc-600 text-white rounded-lg px-4 py-2 text-sm transition-colors duration-200"
+                    className="bg-zinc-700 hover:cursor-pointer hover:bg-zinc-600 text-white rounded-lg px-4 py-2 text-sm transition-colors duration-200"
                   >
                     Cancel
                   </button>

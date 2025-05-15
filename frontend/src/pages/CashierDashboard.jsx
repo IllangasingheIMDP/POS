@@ -167,7 +167,7 @@ const AddReservationModal = ({ show, onClose,tables }) => {
           <h2 className="text-2xl font-bold text-white">Add New Reservation</h2>
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-white"
+            className="text-gray-400  hover:cursor-pointer hover:text-white"
           >
             ✕
           </button>
@@ -663,7 +663,7 @@ const CashierDashboard = () => {
                   </h3>
                   <button
                     onClick={() => setShowInventoryModal(false)}
-                    className="text-gray-400 hover:text-white"
+                    className="text-gray-400 hover:cursor-pointer hover:text-white"
                   >
                     ✕
                   </button>
@@ -700,7 +700,7 @@ const CashierDashboard = () => {
 
                   <button
                     onClick={handleInventoryUpdate}
-                    className="w-full bg-gradient-to-r from-orange-500 to-orange-600 text-white py-3 rounded-lg font-semibold hover:from-orange-600 hover:to-orange-700 transition-all duration-300"
+                    className="w-full bg-gradient-to-r  hover:cursor-pointer from-orange-500 to-orange-600 text-white py-3 rounded-lg font-semibold hover:from-orange-600 hover:to-orange-700 transition-all duration-300"
                   >
                     Update Inventory
                   </button>
