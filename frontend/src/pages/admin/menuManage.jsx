@@ -101,15 +101,21 @@ const MenuManagement = () => {
                 </div>
 
 
-                <div className="flex space-x-8 mb-4">
+
+                <div className="flex items-center space-x-8 mb-8 border-b border-zinc-800 pb-2">
                     {categories.map(category => (
                         <button
-                            key={category.id} // Use unique id
-                            onClick={() => setSelectedCategory(category.name)} // Set category.name
-                            className={`hover:cursor-pointer hover:text-orange-400 text-md font-medium pb-2 border-b-2 ${selectedCategory === category.name ? 'text-orange-400 border-orange-400' : 'text-white border-transparent'
+                            key={category.id}
+                            onClick={() => setSelectedCategory(category.name)}
+                            className={`relative px-4 py-2 transition-all duration-300 ${selectedCategory === category.name
+                                ? 'text-orange-400'
+                                : 'text-white hover:text-orange-300'
                                 }`}
                         >
                             {category.name}
+                            {selectedCategory === category.name && (
+                                <span className="absolute bottom-0 left-0 w-full h-0.5 bg-orange-400 -mb-2"></span>
+                            )}
                         </button>
                     ))}
                 </div>
@@ -135,44 +141,54 @@ const MenuManagement = () => {
                         {/* Add New Dish Card */}
                         <div
                             onClick={() => setShowAddModal(true)}
-                            className="w-64 h-80 bg-zinc-900 rounded-lg border border-yellow-700 flex items-center justify-center cursor-pointer"
+                            className="w-64 h-80 bg-zinc-800/50 rounded-xl border-2 border-dashed border-orange-500/30 
+               flex flex-col items-center justify-center cursor-pointer transition-all duration-300
+               hover:border-orange-500 hover:bg-zinc-800/80"
                         >
-                            <div className="text-center text-yellow-700">
-                                <span className="text-4xl">+</span>
-                                <p className="text-lg font-medium mt-2">Add new dish</p>
+                            <div className="text-center text-orange-500 transition-transform hover:scale-110">
+                                <svg className="w-16 h-16 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5"
+                                        d="M12 4v16m8-8H4" />
+                                </svg>
+                                <p className="text-lg font-medium">Add new dish</p>
                             </div>
                         </div>
 
                         {/* Menu Items */}
                         {filteredItems.map(item => (
-                            <div key={item.id} className="w-64 h-80 bg-zinc-900 rounded-lg border border-neutral-600 relative">
-                                <button
-                                    onClick={() => handleDelete(item.id)}
-                                    className="absolute top-4 right-4 opacity-70"
-                                >
-                                    <img src="/delete.png" className="w-7 h-7 hover:cursor-pointer" alt="delete menu item" />
-                                </button>
+
+                            <div key={item.id} className="w-64 h-80 bg-zinc-800 rounded-xl border border-zinc-700 relative group transition-all duration-300 hover:border-orange-500/50 hover:shadow-lg hover:shadow-orange-500/10">
+                                <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <button
+                                        onClick={() => handleDelete(item.id)}
+                                        className="p-2 rounded-full bg-zinc-900/80 hover:bg-red-500/20"
+                                    >
+                                        <img src="/delete.png" className="w-5 h-5" alt="delete menu item" />
+                                    </button>
+                                </div>
+
                                 <img
                                     src={item.imageFilename ? `http://localhost:8080/api/uploads/images/${item.imageFilename}` : '/apple.jpeg'}
                                     alt={item.name}
-                                    className="w-40 h-36 mx-auto mt-6 rounded-full border border-white"
+                                    className="w-40 h-36 mx-auto mt-6 rounded-full border-2 border-zinc-700 object-cover transition-transform group-hover:scale-105"
                                 />
-                                <div className="text-center mt-4">
-                                    <p className="text-white text-sm font-bold">{item.name}</p>
-                                    <p className="text-zinc-500 text-xs font-bold mt-2">${item.price.toFixed(2)}</p>
+
+                                <div className="text-center mt-6 px-4">
+                                    <p className="text-white text-lg font-semibold truncate">{item.name}</p>
+                                    <p className="text-orange-400 text-md font-bold mt-2">${item.price.toFixed(2)}</p>
                                 </div>
+
                                 <button
                                     onClick={() => {
                                         setCurrentItem(item);
                                         setShowEditModal(true);
                                     }}
-                                    className="hover:cursor-pointer w-full h-14 bg-orange-400/40 rounded-b-lg flex items-center justify-center text-orange-500 text-sm font-bold absolute bottom-0"
+                                    className="absolute bottom-0 w-full py-4 bg-zinc-900/90 backdrop-blur-sm rounded-b-xl 
+                 flex items-center justify-center gap-2 text-orange-400 font-medium
+                 transition-all duration-300 hover:bg-orange-500 hover:text-white"
                                 >
-                                    <svg className="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            strokeWidth="2"
+                                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
                                             d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.536L16.732 3.732z"
                                         />
                                     </svg>
@@ -184,16 +200,21 @@ const MenuManagement = () => {
                 </div>
 
                 {/* Action Buttons */}
-                <div className="flex justify-start space-x-6 mt-6">
+                
+                <div className="flex justify-start space-x-6 mt-8">
                     <button
                         onClick={() => setHasChanges(false)}
-                        className="w-48 h-12 bg-neutral-900 text-orange-500 text-base font-medium rounded-lg border border-orange-500"
+                        className="px-8 py-3 bg-zinc-800 text-orange-400 text-base font-medium rounded-lg
+                 border border-orange-500/30 transition-all duration-300
+                 hover:border-orange-500 hover:bg-orange-500/10"
                     >
                         Discard Changes
                     </button>
                     <button
                         onClick={() => setHasChanges(false)}
-                        className="w-48 h-12 bg-orange-500 text-white text-base font-medium rounded-lg"
+                        className="px-8 py-3 bg-orange-500 text-white text-base font-medium rounded-lg
+                 transition-all duration-300 hover:cursor-pointer hover:bg-orange-600 disabled:opacity-50
+                 disabled:cursor-not-allowed shadow-lg shadow-orange-500/10"
                         disabled={!hasChanges}
                     >
                         Save Changes
@@ -282,28 +303,34 @@ const AddModal = ({ onClose, onSave, categories }) => {
     };
 
     return (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-            <div className="bg-zinc-800 p-6 rounded-lg w-96">
-                <h2 className="text-white text-xl font-semibold mb-4">Add New Dish</h2>
-                <div className="space-y-4">
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50">
+            <div className="bg-zinc-800 p-8 rounded-xl w-[480px] shadow-xl border border-zinc-700">
+                <h2 className="text-white text-2xl font-semibold mb-6">Add New Dish</h2>
+                <div className="space-y-5">
                     <input
                         type="text"
                         placeholder="Name"
                         value={formData.name}
                         onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                        className="w-full p-2 rounded bg-neutral-900 text-white"
+                        className="w-full p-3 rounded-lg bg-zinc-900 text-white border border-zinc-700 
+                          focus:border-orange-500 focus:ring-1 focus:ring-orange-500 outline-none
+                          transition-all duration-300"
                     />
                     <input
                         type="number"
                         placeholder="Price"
                         value={formData.price}
                         onChange={(e) => setFormData({ ...formData, price: e.target.value })}
-                        className="w-full p-2 rounded bg-neutral-900 text-white"
+                        className="w-full p-3 rounded-lg bg-zinc-900 text-white border border-zinc-700 
+                          focus:border-orange-500 focus:ring-1 focus:ring-orange-500 outline-none
+                          transition-all duration-300"
                     />
                     <select
                         value={formData.categoryId}
                         onChange={(e) => setFormData({ ...formData, categoryId: e.target.value })}
-                        className="w-full p-2 rounded bg-neutral-900 text-white"
+                        className="w-full p-3 rounded-lg bg-zinc-900 text-white border border-zinc-700 
+                          focus:border-orange-500 focus:ring-1 focus:ring-orange-500 outline-none
+                          transition-all duration-300"
                     >
                         <option value="">Select Category</option>
                         {categories.map(category => (
@@ -314,7 +341,9 @@ const AddModal = ({ onClose, onSave, categories }) => {
                         placeholder="Description"
                         value={formData.description}
                         onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                        className="w-full p-2 rounded bg-neutral-900 text-white"
+                        className="w-full p-3 rounded-lg bg-zinc-900 text-white border border-zinc-700 
+                          focus:border-orange-500 focus:ring-1 focus:ring-orange-500 outline-none
+                          transition-all duration-300"
                     />
                     <label className="flex items-center text-white">
                         <input
@@ -328,11 +357,26 @@ const AddModal = ({ onClose, onSave, categories }) => {
                     <input
                         type="file"
                         onChange={(e) => setFormData({ ...formData, image: e.target.files[0] })}
-                        className="w-full p-2 rounded bg-neutral-900 text-white"
+                        className="w-full p-3 rounded-lg bg-zinc-900 text-white border border-zinc-700 
+                          focus:border-orange-500 focus:ring-1 focus:ring-orange-500 outline-none
+                          transition-all duration-300"
                     />
-                    <div className="flex justify-end space-x-4">
-                        <button onClick={onClose} className="px-4 py-2 bg-neutral-900 text-orange-500 rounded">Cancel</button>
-                        <button onClick={handleSubmit} className="px-4 py-2 bg-orange-500 text-white rounded" disabled={!formData.name || !formData.price || !formData.categoryId || !formData.description}>Add</button>
+                    <div className="flex justify-end space-x-4 mt-8">
+                        <button 
+                            onClick={onClose} 
+                            className="px-6 py-2.5 rounded-lg border border-zinc-600 text-zinc-400 
+                             hover:text-white hover:border-zinc-500 transition-all duration-300"
+                        >
+                            Cancel
+                        </button>
+                        <button 
+                            onClick={handleSubmit} 
+                            className="px-6 py-2.5 rounded-lg bg-orange-500 text-white
+                             hover:bg-orange-600 transition-all duration-300 
+                             disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                            Add
+                        </button>
                     </div>
                 </div>
             </div>
@@ -397,8 +441,8 @@ const CategoryModal = ({ categories, onClose, onAdd, onEdit, onDelete }) => {
                             <li key={cat.id} className="flex justify-between items-center mb-2">
                                 <span>{cat.name}</span>
                                 <div>
-                                    <button onClick={() => handleEditClick(cat)} className="text-blue-400 mr-2">Edit</button>
-                                    <button onClick={() => onDelete(cat.id)} className="text-red-400">Delete</button>
+                                    <button onClick={() => handleEditClick(cat)} className="hover:cursor-pointer text-blue-400 mr-2">Edit</button>
+                                    <button onClick={() => onDelete(cat.id)} className="hover:cursor-pointer text-red-400">Delete</button>
                                 </div>
                             </li>
                         ))}
@@ -437,28 +481,34 @@ const EditModal = ({ item, onClose, onSave, categories }) => {
     };
 
     return (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-            <div className="bg-zinc-800 p-6 rounded-lg w-96">
-                <h2 className="text-white text-xl font-semibold mb-4">Edit Dish</h2>
-                <div className="space-y-4">
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50">
+            <div className="bg-zinc-800 p-8 rounded-xl w-[480px] shadow-xl border border-zinc-700">
+                <h2 className="text-white text-2xl font-semibold mb-6">Edit Dish</h2>
+                <div className="space-y-5">
                     <input
                         type="text"
                         placeholder="Name"
                         value={formData.name}
                         onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                        className="w-full p-2 rounded bg-neutral-900 text-white"
+                        className="w-full p-3 rounded-lg bg-zinc-900 text-white border border-zinc-700 
+                          focus:border-orange-500 focus:ring-1 focus:ring-orange-500 outline-none
+                          transition-all duration-300"
                     />
                     <input
                         type="number"
                         placeholder="Price"
                         value={formData.price}
                         onChange={(e) => setFormData({ ...formData, price: e.target.value })}
-                        className="w-full p-2 rounded bg-neutral-900 text-white"
+                        className="w-full p-3 rounded-lg bg-zinc-900 text-white border border-zinc-700 
+                          focus:border-orange-500 focus:ring-1 focus:ring-orange-500 outline-none
+                          transition-all duration-300"
                     />
                     <select
                         value={formData.categoryId}
                         onChange={(e) => setFormData({ ...formData, categoryId: e.target.value })}
-                        className="w-full p-2 rounded bg-neutral-900 text-white"
+                        className="w-full p-3 rounded-lg bg-zinc-900 text-white border border-zinc-700 
+                          focus:border-orange-500 focus:ring-1 focus:ring-orange-500 outline-none
+                          transition-all duration-300"
                     >
                         <option value="">Select Category</option>
                         {categories.map(category => (
@@ -469,7 +519,9 @@ const EditModal = ({ item, onClose, onSave, categories }) => {
                         placeholder="Description"
                         value={formData.description}
                         onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                        className="w-full p-2 rounded bg-neutral-900 text-white"
+                        className="w-full p-3 rounded-lg bg-zinc-900 text-white border border-zinc-700 
+                          focus:border-orange-500 focus:ring-1 focus:ring-orange-500 outline-none
+                          transition-all duration-300"
                     />
                     <label className="flex items-center text-white">
                         <input
@@ -483,11 +535,26 @@ const EditModal = ({ item, onClose, onSave, categories }) => {
                     <input
                         type="file"
                         onChange={(e) => setFormData({ ...formData, image: e.target.files[0] })}
-                        className="w-full p-2 rounded bg-neutral-900 text-white"
+                        className="w-full p-3 rounded-lg bg-zinc-900 text-white border border-zinc-700 
+                          focus:border-orange-500 focus:ring-1 focus:ring-orange-500 outline-none
+                          transition-all duration-300"
                     />
-                    <div className="flex justify-end space-x-4">
-                        <button onClick={onClose} className="px-4 py-2 bg-neutral-900 text-orange-500 rounded">Cancel</button>
-                        <button onClick={handleSubmit} className="px-4 py-2 bg-orange-500 text-white rounded">Save</button>
+                    <div className="flex justify-end space-x-4 mt-8">
+                        <button 
+                            onClick={onClose} 
+                            className="px-6 py-2.5 rounded-lg border border-zinc-600 text-zinc-400 
+                             hover:text-white hover:border-zinc-500 transition-all duration-300"
+                        >
+                            Cancel
+                        </button>
+                        <button 
+                            onClick={handleSubmit} 
+                            className="px-6 py-2.5 rounded-lg bg-orange-500 text-white
+                             hover:bg-orange-600 transition-all duration-300 
+                             disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                            Save
+                        </button>
                     </div>
                 </div>
             </div>
