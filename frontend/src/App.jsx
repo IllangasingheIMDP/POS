@@ -12,6 +12,7 @@ import StaffManage from './pages/admin/staffManage';
 import Login from './pages/login';
 import InventoryManagement from './pages/admin/inventoryManage';
 import Reservation from './pages/admin/reservation';
+import OrderManage from './pages/cashier/orderManage';
 function App() {
   const dispatch = useDispatch();
 
@@ -25,6 +26,7 @@ function App() {
       <Route path="/login" element={<Login />} />
       <Route element={<ProtectedRoute allowedRoles={['CASHIER']} />}>
         <Route path="/cashier" element={<CashierDashboard />} />
+        <Route path="/cashier/order" element={<OrderManage />} />
       </Route>
       <Route element={<ProtectedRoute allowedRoles={['CHEF']} />}>
         <Route path="/chef" element={<ChefDashboard />} />
