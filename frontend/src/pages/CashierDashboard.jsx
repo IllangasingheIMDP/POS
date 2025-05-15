@@ -5,6 +5,8 @@ const CashierDashboard = () => {
   // State management
   const [orders, setOrders] = useState([]);
   const [reservations, setReservations] = useState([]);
+  const [popularDishes, setPopularDishes] = useState([]);
+  
   const [dashboardStats, setDashboardStats] = useState({
     todayOrders: 0,
     pendingOrders: 0,
@@ -23,6 +25,7 @@ const CashierDashboard = () => {
       const response = await api.get('/orders');
       console.log('Orders:', response.data);
       setOrders(response.data);
+      calculatePopularDishes(response.data);
       
       // Calculate dashboard stats
       const today = new Date().toISOString().split('T')[0];
@@ -88,6 +91,27 @@ const CashierDashboard = () => {
     }
   };
 
+  // Calculate popular dishes
+  const calculatePopularDishes = (orders) => {
+    const dishCount = {};
+    
+    // Count quantities of each dish from all orders
+    orders.forEach(order => {
+      order.items?.forEach(item => {
+        const dishName = item.dish || item.itemName; // Handle both possible property names
+        dishCount[dishName] = (dishCount[dishName] || 0) + (item.quantity || 1);
+      });
+    });
+
+    // Convert to array and sort by quantity
+    const sortedDishes = Object.entries(dishCount)
+      .map(([name, quantity]) => ({ name, quantity }))
+      .sort((a, b) => b.quantity - a.quantity)
+      .slice(0, 5); // Get top 5 dishes
+
+    setPopularDishes(sortedDishes);
+  };
+
   // Update the summary cards data
   const summaryCards = [
     { 
@@ -141,11 +165,23 @@ const CashierDashboard = () => {
             <div key={index} className="bg-[#1d2b2f] p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-800">
               <h2 className="text-lg font-semibold text-gray-300">{card.title}</h2>
               {card.chart ? (
-                <div className="flex space-x-3 mt-4 items-end h-24">
-                  {[14, 24, 16, 10].map((height, i) => (
-                    <div key={i} className="w-3 bg-gradient-to-t from-orange-600 to-orange-400 rounded-t-sm" 
-                         style={{ height: `${height * 4}px` }}></div>
-                  ))}
+                <div className="flex flex-col h-full">
+                  <div className="flex space-x-3 mt-4 items-end h-24 justify-between px-2">
+                    {popularDishes.map((dish, i) => (
+                      <div key={i} className="flex flex-col items-center w-1/6">
+                        <div 
+                          className="w-full bg-gradient-to-t from-orange-600 to-orange-400 rounded-t-sm hover:from-orange-500 hover:to-orange-300 transition-all duration-300"
+                          style={{ 
+                            height: `${(dish.quantity / Math.max(...popularDishes.map(d => d.quantity))) * 80}px`
+                          }}
+                        />
+                        <div className="text-xs text-gray-400 mt-2 rotate-45 origin-left truncate">
+                          {dish.name}
+                        </div>
+                        
+                      </div>
+                    ))}
+                  </div>
                 </div>
               ) : (
                 <>
