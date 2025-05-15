@@ -107,8 +107,8 @@ const handleTableStatusChange = async (tableId, newStatus) => {
   };
 
   return (
-    <div className="menu-page flex min-h-screen h-auto bg-neutral-900 text-white">
-      <div className="w-full h-fit relative bg-zinc-900 rounded-lg p-6 font-['Inter']">
+    <div className="menu-page flex min-h-screen h-auto p-10 bg-[#0B161A] text-white">
+      <div className="w-full h-fit relative bg-[#141E20] rounded-lg p-6 font-['Inter']">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-white text-xl font-semibold">Reservation Management</h1>
         </div>

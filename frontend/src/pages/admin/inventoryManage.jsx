@@ -75,9 +75,9 @@ const InventoryManagement = () => {
     };
 
     return (
-        <div className="min-h-screen h-auto bg-neutral-900 text-white font-['Inter'] p-8">
+        <div className="min-h-screen w-full h-auto bg-[#0B161A] text-white font-['Inter'] p-8">
             <div className="max-w-[1400px] mx-auto">
-                <div className="w-full h-fit bg-zinc-900 rounded-2xl p-8 shadow-lg">
+                <div className="w-full h-fit bg-[#141E20] rounded-2xl p-8 shadow-lg">
                     {/* Header Section */}
                     <div className="mb-8">
                         <h1 className="text-white text-3xl font-semibold">Inventory Management</h1>

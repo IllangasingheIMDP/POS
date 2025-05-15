@@ -15,7 +15,7 @@ const Sidebar = () => {
       { icon: '/Inventory.svg', text: 'Inventory', link: '/admin/inventory' },
       { icon: '/reservationIcon.svg', text: 'Reservations', link: '/admin/reservation' },
       { icon: '/reportAnalyticsIcon.svg', text: 'Report Analytics', link: '#' },
-      { icon: '/orderIcon.svg', text: 'Order History', link: '#' },
+      
       { icon: '/notification.svg', text: 'Notifications', link: '#' },
       { icon: '/settings.svg', text: 'Setting', link: '#' },
       { icon: '/logout.svg', text: 'logout', link: '#' },
@@ -32,6 +32,7 @@ const Sidebar = () => {
       { icon: '/logout.svg', text: 'logout', link: '#' },
     ],
     CHEF: [
+       { icon: '/dashboardIcon.svg', text: 'Dashboard', link: '/chef' },
       { icon: '/orderIcon.svg', text: 'Ongoing Orders', link: '#' },
       { icon: '/completedOrdersIcon.svg', text: 'Completed Orders', link: '#' },
       { icon: '/newOrdersIcon.svg', text: 'New Orders', link: '#' },
@@ -46,7 +47,7 @@ const Sidebar = () => {
   const [activeItem, setActiveItem] = useState(items[0]?.text || '');
 
   return (
-    <div className="w-72 bg-zinc-900 p-4 h-full">
+    <div className="w-72 bg-[#141E20] py-4 pl-4 min-h-screen">
       <div className="flex items-center mb-6">
         <img src="/logo.png" alt="logo" className="w-11 h-11 mr-2" />
         <h1 className="text-2xl font-semibold">BISTROFY</h1>
@@ -55,8 +56,8 @@ const Sidebar = () => {
         {items.map((item, index) => (
           <div
             key={index}
-            className={`flex items-center p-2 cursor-pointer ${
-              activeItem === item.text ? 'bg-neutral-900 rounded-3xl' : ''
+            className={`flex items-center px-2 py-3 cursor-pointer ${
+              activeItem === item.text ? 'bg-[#0B161A] rounded-l-3xl' : ''
             }`}
             onClick={() => {
               if (item.text === 'logout') {
