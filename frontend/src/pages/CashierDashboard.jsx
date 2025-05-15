@@ -9,9 +9,9 @@ const AddMenuModal = ({ show, onClose, form, setForm, categories, onSubmit }) =>
     const { name, value, type, checked, files } = e.target;
     setForm(prev => ({
       ...prev,
-      [name]: type === 'checkbox' ? checked : 
-              type === 'file' ? files[0] : 
-              value
+      [name]: type === 'checkbox' ? checked :
+        type === 'file' ? files[0] :
+          value
     }));
   };
 
@@ -20,7 +20,7 @@ const AddMenuModal = ({ show, onClose, form, setForm, categories, onSubmit }) =>
       <div className="bg-[#1d2b2f] rounded-xl p-8 w-[500px] overflow-y-auto">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-2xl font-bold text-white">Add New Menu Item</h2>
-          <button 
+          <button
             onClick={onClose}
             className="text-gray-400 hover:text-white"
           >
@@ -165,7 +165,7 @@ const AddReservationModal = ({ show, onClose }) => {
       <div className="bg-[#1d2b2f] rounded-xl p-8 w-[500px] max-h-[90vh] overflow-y-auto">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-2xl font-bold text-white">Add New Reservation</h2>
-          <button 
+          <button
             onClick={onClose}
             className="text-gray-400 hover:text-white"
           >
@@ -180,7 +180,7 @@ const AddReservationModal = ({ show, onClose }) => {
             <input
               type="text"
               value={newReservation.customerName}
-              onChange={(e) => setNewReservation({...newReservation, customerName: e.target.value})}
+              onChange={(e) => setNewReservation({ ...newReservation, customerName: e.target.value })}
               className="w-full bg-[#141E20] text-white rounded-lg p-3 border border-gray-700 focus:border-orange-500 focus:outline-none"
               required
             />
@@ -192,7 +192,7 @@ const AddReservationModal = ({ show, onClose }) => {
             <input
               type="tel"
               value={newReservation.contactNumber}
-              onChange={(e) => setNewReservation({...newReservation, contactNumber: e.target.value})}
+              onChange={(e) => setNewReservation({ ...newReservation, contactNumber: e.target.value })}
               className="w-full bg-[#141E20] text-white rounded-lg p-3 border border-gray-700 focus:border-orange-500 focus:outline-none"
               required
             />
@@ -205,7 +205,7 @@ const AddReservationModal = ({ show, onClose }) => {
               <input
                 type="date"
                 value={newReservation.date}
-                onChange={(e) => setNewReservation({...newReservation, date: e.target.value})}
+                onChange={(e) => setNewReservation({ ...newReservation, date: e.target.value })}
                 className="w-full bg-[#141E20] text-white rounded-lg p-3 border border-gray-700 focus:border-orange-500 focus:outline-none"
                 required
               />
@@ -215,7 +215,7 @@ const AddReservationModal = ({ show, onClose }) => {
               <input
                 type="time"
                 value={newReservation.time}
-                onChange={(e) => setNewReservation({...newReservation, time: e.target.value})}
+                onChange={(e) => setNewReservation({ ...newReservation, time: e.target.value })}
                 className="w-full bg-[#141E20] text-white rounded-lg p-3 border border-gray-700 focus:border-orange-500 focus:outline-none"
                 required
               />
@@ -230,7 +230,7 @@ const AddReservationModal = ({ show, onClose }) => {
                 type="number"
                 min="1"
                 value={newReservation.numberOfGuests}
-                onChange={(e) => setNewReservation({...newReservation, numberOfGuests: parseInt(e.target.value)})}
+                onChange={(e) => setNewReservation({ ...newReservation, numberOfGuests: parseInt(e.target.value) })}
                 className="w-full bg-[#141E20] text-white rounded-lg p-3 border border-gray-700 focus:border-orange-500 focus:outline-none"
                 required
               />
@@ -241,7 +241,7 @@ const AddReservationModal = ({ show, onClose }) => {
                 type="number"
                 min="1"
                 value={newReservation.tableNumber}
-                onChange={(e) => setNewReservation({...newReservation, tableNumber: parseInt(e.target.value)})}
+                onChange={(e) => setNewReservation({ ...newReservation, tableNumber: parseInt(e.target.value) })}
                 className="w-full bg-[#141E20] text-white rounded-lg p-3 border border-gray-700 focus:border-orange-500 focus:outline-none"
                 required
               />
@@ -286,12 +286,49 @@ const CashierDashboard = () => {
   });
 
   // Fetch data on component mount
+  // Add these state declarations in CashierDashboard component
+  const [inventoryList, setInventoryList] = useState([]);
+  const [showInventoryModal, setShowInventoryModal] = useState(false);
+  const [selectedInventoryItem, setSelectedInventoryItem] = useState(null);
+  const [inventoryFormData, setInventoryFormData] = useState({
+    quantity: 0,
+    threshold: 0
+  });
+
+  // Add this function with other fetch functions
+  const fetchInventoryList = async () => {
+    try {
+      const response = await api.get('/inventory');
+      setInventoryList(response.data);
+    } catch (error) {
+      console.error('Error fetching inventory:', error);
+    }
+  };
+
+  // Add this to your useEffect
   useEffect(() => {
     fetchOrders();
     fetchReservations();
     fetchInventoryAlerts();
     fetchCategories();
+    fetchInventoryList(); // Add this line
   }, []);
+
+  // Add this function to handle inventory updates
+  const handleInventoryUpdate = async () => {
+    try {
+      const response=await api.put(`/inventory/${selectedInventoryItem.id}`, {
+        ...selectedInventoryItem,
+        ...inventoryFormData
+      });
+      console.log('Inventory updated:', response);
+      fetchInventoryList();
+      fetchInventoryAlerts();
+      setShowInventoryModal(false);
+    } catch (error) {
+      console.error('Error updating inventory:', error);
+    }
+  };
 
   // Fetch orders
   const fetchOrders = async () => {
@@ -346,7 +383,7 @@ const CashierDashboard = () => {
       const response = await api.get('/inventory');
       const lowStockItems = response.data.filter(item => item.quantity <= item.threshold);
       setInventoryAlerts(lowStockItems);
-      
+
       setDashboardStats(prev => ({
         ...prev,
         inventoryAlerts: lowStockItems.length
@@ -504,29 +541,29 @@ const CashierDashboard = () => {
 
         {/* Action Buttons */}
         <div className="grid grid-cols-2 gap-6 mb-8">
-  {[
-    { 
-      title: "ADD MENU ITEM", 
-      icon: "➕", 
-      onClick: () => setShowAddMenuModal(true) 
-    },
-    { 
-      title: "ADD RESERVATION", 
-      icon: "📅", 
-      onClick: () => setShowReservationModal(true) 
-    }
-  ].map((button, index) => (
-    <div key={index} className="bg-[#1d2b2f] rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-800">
-      <button 
-        onClick={button.onClick}
-        className="w-full p-6 flex hover:cursor-pointer items-center justify-center space-x-3"
-      >
-        <span className="text-2xl">{button.icon}</span>
-        <span className="text-lg font-semibold text-orange-400">{button.title}</span>
-      </button>
-    </div>
-  ))}
-</div>
+          {[
+            {
+              title: "ADD MENU ITEM",
+              icon: "➕",
+              onClick: () => setShowAddMenuModal(true)
+            },
+            {
+              title: "ADD RESERVATION",
+              icon: "📅",
+              onClick: () => setShowReservationModal(true)
+            }
+          ].map((button, index) => (
+            <div key={index} className="bg-[#1d2b2f] rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-800">
+              <button
+                onClick={button.onClick}
+                className="w-full p-6 flex hover:cursor-pointer hover:scale-105 items-center justify-center space-x-3"
+              >
+                <span className="text-2xl">{button.icon}</span>
+                <span className="text-lg font-semibold text-orange-400">{button.title}</span>
+              </button>
+            </div>
+          ))}
+        </div>
 
         {/* Add the modal component */}
         <AddMenuModal
@@ -537,18 +574,117 @@ const CashierDashboard = () => {
           categories={categories}
           onSubmit={handleAddMenuItem}
         />
-  <AddReservationModal 
-  show={showReservationModal}
-  onClose={() => setShowReservationModal(false)}
-/>
+        <AddReservationModal
+          show={showReservationModal}
+          onClose={() => setShowReservationModal(false)}
+        />
         {/* Bottom Grid */}
         <div className="grid grid-cols-2 gap-6">
           <div className="bg-[#1d2b2f] p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-800">
-            <h2 className="text-2xl font-semibold text-orange-400 text-center mb-4">Update Inventory</h2>
-            <div className="space-y-4">
-              {/* Add inventory content here */}
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-2xl font-semibold text-orange-400">Update Inventory</h2>
+              <span className="text-sm text-gray-400">{inventoryList.length} items</span>
+            </div>
+
+            <div className="overflow-y-auto max-h-[300px] scrollbar-thin scrollbar-thumb-orange-500 scrollbar-track-gray-700">
+              <table className="w-full">
+                <thead className="sticky top-0 bg-[#1d2b2f]">
+                  <tr className="text-left border-b border-gray-700">
+                    <th className="py-3 text-gray-400 font-medium">Item</th>
+                    <th className="py-3 text-gray-400 font-medium">Quantity</th>
+                    <th className="py-3 text-gray-400 font-medium">Status</th>
+                    <th className="py-3 text-gray-400 font-medium">Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {inventoryList.map((item) => (
+                    <tr key={item.id} className="border-b border-gray-700/50 hover:bg-gray-800/30">
+                      <td className="py-3 text-white">{item.name}</td>
+                      <td className="py-3 text-white">{item.quantity}</td>
+                      <td className="py-3">
+                        <span className={`px-2 py-1 rounded-full text-xs ${item.quantity <= item.threshold
+                            ? 'bg-red-500/20 text-red-400'
+                            : 'bg-green-500/20 text-green-400'
+                          }`}>
+                          {item.quantity <= item.threshold ? 'Low Stock' : 'In Stock'}
+                        </span>
+                      </td>
+                      <td className="py-3">
+                        <button
+                          onClick={() => {
+                            setSelectedInventoryItem(item);
+                            setInventoryFormData({
+                              quantity: item.quantity,
+                              threshold: item.threshold
+                            });
+                            setShowInventoryModal(false);
+                          }}
+                          className="text-blue-400 hover:cursor-pointer hover:text-blue-300 transition-colors duration-200"
+                        >
+                          Update
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
           </div>
+          {showInventoryModal && (
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+              <div className="bg-[#1d2b2f] rounded-xl p-6 w-[400px]">
+                <div className="flex justify-between items-center mb-6">
+                  <h3 className="text-xl font-semibold text-white">
+                    Update {selectedInventoryItem?.name}
+                  </h3>
+                  <button
+                    onClick={() => setShowInventoryModal(false)}
+                    className="text-gray-400 hover:text-white"
+                  >
+                    ✕
+                  </button>
+                </div>
+
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-gray-400 mb-2">Quantity</label>
+                    <input
+                      type="number"
+                      min="0"
+                      value={inventoryFormData.quantity}
+                      onChange={(e) => setInventoryFormData({
+                        ...inventoryFormData,
+                        quantity: parseInt(e.target.value)
+                      })}
+                      className="w-full bg-[#141E20] text-white rounded-lg p-3 border border-gray-700 focus:border-orange-500 focus:outline-none"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-gray-400 mb-2">Threshold</label>
+                    <input
+                      type="number"
+                      min="0"
+                      value={inventoryFormData.threshold}
+                      onChange={(e) => setInventoryFormData({
+                        ...inventoryFormData,
+                        threshold: parseInt(e.target.value)
+                      })}
+                      className="w-full bg-[#141E20] text-white rounded-lg p-3 border border-gray-700 focus:border-orange-500 focus:outline-none"
+                    />
+                  </div>
+
+                  <button
+                    onClick={handleInventoryUpdate}
+                    className="w-full bg-gradient-to-r from-orange-500 to-orange-600 text-white py-3 rounded-lg font-semibold hover:from-orange-600 hover:to-orange-700 transition-all duration-300"
+                  >
+                    Update Inventory
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
           <div className="space-y-6">
             <div className="bg-[#1d2b2f] p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-800">
               <h2 className="text-xl font-semibold text-white mb-4">Staff on Shift</h2>
@@ -567,7 +703,7 @@ const CashierDashboard = () => {
                 ))}
               </div>
             </div>
-            
+
             <div className="bg-[#1d2b2f] p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-800">
               <h2 className="text-xl font-semibold text-white mb-4">Inventory Alerts</h2>
               <div className="space-y-3">
@@ -586,7 +722,7 @@ const CashierDashboard = () => {
                           </p>
                         </div>
                       </div>
-                      <span className="px-3 py-1 bg-red-500/20 text-red-400 rounded-full text-sm">
+                      <span className="px-3 py-1 bg-red-500/20 text-red-200 rounded-full text-sm">
                         Low Stock
                       </span>
                     </div>
