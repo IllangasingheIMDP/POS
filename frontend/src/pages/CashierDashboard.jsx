@@ -1,41 +1,159 @@
 import React, { useState, useEffect } from 'react';
 import api from '../constants/api';
 
+// Define AddMenuModal outside CashierDashboard
+const AddMenuModal = ({ show, onClose, form, setForm, categories, onSubmit }) => {
+  if (!show) return null;
+
+  const handleInputChange = (e) => {
+    const { name, value, type, checked, files } = e.target;
+    setForm(prev => ({
+      ...prev,
+      [name]: type === 'checkbox' ? checked : 
+              type === 'file' ? files[0] : 
+              value
+    }));
+  };
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div className="bg-[#1d2b2f] rounded-xl p-8 w-[500px] overflow-y-auto">
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-2xl font-bold text-white">Add New Menu Item</h2>
+          <button 
+            onClick={onClose}
+            className="text-gray-400 hover:text-white"
+          >
+            ✕
+          </button>
+        </div>
+
+        <form onSubmit={onSubmit} className="space-y-6">
+          {/* Name Input */}
+          <div>
+            <label className="block text-gray-400 mb-2">Item Name</label>
+            <input
+              type="text"
+              value={form.name}
+              name="name"
+              onChange={handleInputChange}
+              className="w-full bg-[#141E20] text-white rounded-lg p-3 border border-gray-700 focus:border-orange-500 focus:outline-none"
+              required
+            />
+          </div>
+
+          {/* Price Input */}
+          <div>
+            <label className="block text-gray-400 mb-2">Price (LKR)</label>
+            <input
+              type="number"
+              value={form.price}
+              onChange={handleInputChange}
+              name="price"
+              className="w-full bg-[#141E20] text-white rounded-lg p-3 border border-gray-700 focus:border-orange-500 focus:outline-none"
+              required
+            />
+          </div>
+
+          {/* Category Select */}
+          <div>
+            <label className="block text-gray-400 mb-2">Category</label>
+            <select
+              value={form.categoryId}
+              onChange={handleInputChange}
+              name="categoryId"
+              className="w-full bg-[#141E20] text-white rounded-lg p-3 border border-gray-700 focus:border-orange-500 focus:outline-none"
+              required
+            >
+              <option value="">Select Category</option>
+              {categories.map(category => (
+                <option key={category.id} value={category.id}>
+                  {category.name}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Description Textarea */}
+          <div>
+            <label className="block text-gray-400 mb-2">Description</label>
+            <textarea
+              value={form.description}
+              onChange={handleInputChange}
+              name="description"
+              className="w-full bg-[#141E20] text-white rounded-lg p-3 border border-gray-700 focus:border-orange-500 focus:outline-none h-24 resize-none"
+            />
+          </div>
+
+          {/* Image Upload */}
+          <div>
+            <label className="block text-gray-400 mb-2">Image</label>
+            <input
+              type="file"
+              onChange={handleInputChange}
+              name="image"
+              className="w-full bg-[#141E20] text-white rounded-lg p-3 border border-gray-700 focus:border-orange-500 focus:outline-none"
+              accept="image/*"
+            />
+            {form.image && (
+              <p className="text-gray-400 mt-1">Selected: {form.image.name}</p>
+            )}
+          </div>
+
+          {/* Available Toggle */}
+          <div className="flex items-center">
+            <input
+              type="checkbox"
+              checked={form.available}
+              onChange={handleInputChange}
+              name="available"
+              className="w-5 h-5 rounded border-gray-700 text-orange-500 focus:ring-orange-500"
+            />
+            <label className="ml-2 text-gray-400">Available</label>
+          </div>
+
+          {/* Submit Button */}
+          <button
+            type="submit"
+            className="w-full bg-gradient-to-r from-orange-500 to-orange-600 text-white py-3 rounded-lg font-semibold hover:from-orange-600 hover:to-orange-700 transition-all duration-300"
+          >
+            Add Menu Item
+          </button>
+        </form>
+      </div>
+    </div>
+  );
+};
+
 const CashierDashboard = () => {
   // State management
   const [orders, setOrders] = useState([]);
   const [reservations, setReservations] = useState([]);
   const [popularDishes, setPopularDishes] = useState([]);
   const [inventoryAlerts, setInventoryAlerts] = useState([]);
-
-  // Add this new function after other fetch functions
-const fetchInventoryAlerts = async () => {
-  try {
-    const response = await api.get('/inventory');
-    const lowStockItems = response.data.filter(item => item.quantity <= item.threshold);
-    setInventoryAlerts(lowStockItems);
-    
-    setDashboardStats(prev => ({
-      ...prev,
-      inventoryAlerts: lowStockItems.length
-    }));
-  } catch (error) {
-    console.error('Error fetching inventory:', error);
-  }
-};
-const [dashboardStats, setDashboardStats] = useState({
-  todayOrders: 0,
-  pendingOrders: 0,
-  totalReservations: 0,
-  inventoryAlerts: 0
-});
-
+  const [showAddMenuModal, setShowAddMenuModal] = useState(false);
+  const [menuItemForm, setMenuItemForm] = useState({
+    name: '',
+    price: '',
+    categoryId: '',
+    description: '',
+    available: true,
+    image: null
+  });
+  const [categories, setCategories] = useState([]);
+  const [dashboardStats, setDashboardStats] = useState({
+    todayOrders: 0,
+    pendingOrders: 0,
+    totalReservations: 0,
+    inventoryAlerts: 0
+  });
 
   // Fetch data on component mount
   useEffect(() => {
     fetchOrders();
     fetchReservations();
-    fetchInventoryAlerts(); // Fetch inventory alerts
+    fetchInventoryAlerts();
+    fetchCategories();
   }, []);
 
   // Fetch orders
@@ -46,7 +164,6 @@ const [dashboardStats, setDashboardStats] = useState({
       setOrders(response.data);
       calculatePopularDishes(response.data);
 
-      // Calculate dashboard stats
       const today = new Date().toISOString().split('T')[0];
       const todayOrders = response.data.filter(order =>
         order.createdTime.split('T')[0] === today
@@ -72,7 +189,6 @@ const [dashboardStats, setDashboardStats] = useState({
       console.log('Reservations:', response.data);
       setReservations(response.data);
 
-      // Update reservations count
       const today = new Date().toISOString().split('T')[0];
       const todayReservations = response.data.filter(reservation =>
         reservation.date === today
@@ -87,11 +203,37 @@ const [dashboardStats, setDashboardStats] = useState({
     }
   };
 
+  // Fetch inventory alerts
+  const fetchInventoryAlerts = async () => {
+    try {
+      const response = await api.get('/inventory');
+      const lowStockItems = response.data.filter(item => item.quantity <= item.threshold);
+      setInventoryAlerts(lowStockItems);
+      
+      setDashboardStats(prev => ({
+        ...prev,
+        inventoryAlerts: lowStockItems.length
+      }));
+    } catch (error) {
+      console.error('Error fetching inventory:', error);
+    }
+  };
+
+  // Fetch categories
+  const fetchCategories = async () => {
+    try {
+      const response = await api.get('/categories');
+      setCategories(response.data);
+    } catch (error) {
+      console.error('Error fetching categories:', error);
+    }
+  };
+
   // Handle new reservation
   const handleAddReservation = async (reservationData) => {
     try {
-      await api.post('/api/reservations', reservationData);
-      fetchReservations(); // Refresh reservations
+      await api.post('/reservations', reservationData);
+      fetchReservations();
     } catch (error) {
       console.error('Error adding reservation:', error);
     }
@@ -100,58 +242,71 @@ const [dashboardStats, setDashboardStats] = useState({
   // Handle order status update
   const handleUpdateOrderStatus = async (orderId, newStatus) => {
     try {
-      await api.put('/api/orders/status', {
-        orderId,
-        status: newStatus
-      });
-      fetchOrders(); // Refresh orders
+      await api.put('/orders/status', { orderId, status: newStatus });
+      fetchOrders();
     } catch (error) {
       console.error('Error updating order status:', error);
+    }
+  };
+
+  // Handle menu item creation
+  const handleAddMenuItem = async (e) => {
+    e.preventDefault();
+    try {
+      const formData = new FormData();
+      formData.append('name', menuItemForm.name);
+      formData.append('price', menuItemForm.price);
+      formData.append('categoryId', menuItemForm.categoryId);
+      formData.append('description', menuItemForm.description);
+      formData.append('available', menuItemForm.available);
+      if (menuItemForm.image) {
+        formData.append('image', menuItemForm.image);
+      }
+      //console.log('Form Data:', formData);
+      await api.post('/menu', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      alert('Menu item added successfully!');
+      setShowAddMenuModal(false);
+      setMenuItemForm({
+        name: '',
+        price: '',
+        categoryId: '',
+        description: '',
+        available: true,
+        image: null
+      });
+    } catch (error) {
+      console.error('Error adding menu item:', error);
     }
   };
 
   // Calculate popular dishes
   const calculatePopularDishes = (orders) => {
     const dishCount = {};
-
-    // Count quantities of each dish from all orders
     orders.forEach(order => {
       order.items?.forEach(item => {
-        const dishName = item.dish || item.itemName; // Handle both possible property names
+        const dishName = item.dish || item.itemName;
         dishCount[dishName] = (dishCount[dishName] || 0) + (item.quantity || 1);
       });
     });
 
-    // Convert to array and sort by quantity
     const sortedDishes = Object.entries(dishCount)
       .map(([name, quantity]) => ({ name, quantity }))
       .sort((a, b) => b.quantity - a.quantity)
-      .slice(0, 5); // Get top 5 dishes
+      .slice(0, 5);
 
     setPopularDishes(sortedDishes);
   };
 
-  // Update the summary cards data
+  // Summary cards data
   const summaryCards = [
-    {
-      title: "TODAY'S ORDERS",
-      value: dashboardStats.todayOrders.toString(),
-      subtext: "Orders Completed"
-    },
-    {
-      title: "PENDING ORDERS",
-      value: dashboardStats.pendingOrders.toString(),
-      subtext: "Need Attention"
-    },
-    {
-      title: "RESERVATIONS",
-      value: dashboardStats.totalReservations.toString(),
-      subtext: "Today's Bookings"
-    },
-    {
-      title: "POPULAR DISHES",
-      chart: true
-    }
+    { title: "TODAY'S ORDERS", value: dashboardStats.todayOrders.toString(), subtext: "Orders Completed" },
+    { title: "PENDING ORDERS", value: dashboardStats.pendingOrders.toString(), subtext: "Need Attention" },
+    { title: "RESERVATIONS", value: dashboardStats.totalReservations.toString(), subtext: "Today's Bookings" },
+    { title: "POPULAR DISHES", chart: true }
   ];
 
   const today = new Date();
@@ -168,7 +323,6 @@ const [dashboardStats, setDashboardStats] = useState({
             <p className="text-base text-gray-400 font-medium">{formattedDate}</p>
           </div>
           <div className="flex items-center space-x-6">
-
             <div className="flex items-center bg-[#1d2b2f] py-2 px-4 rounded-lg shadow-lg">
               <span className="text-xl font-medium mr-4 text-white">John Doe</span>
               <div className="w-12 h-12 bg-gradient-to-r from-orange-400 to-orange-600 rounded-full flex items-center justify-center shadow-lg">
@@ -197,7 +351,6 @@ const [dashboardStats, setDashboardStats] = useState({
                         <div className="text-xs text-gray-400 mt-2 rotate-45 origin-left truncate">
                           {dish.name}
                         </div>
-
                       </div>
                     ))}
                   </div>
@@ -211,20 +364,35 @@ const [dashboardStats, setDashboardStats] = useState({
             </div>
           ))}
         </div>
+
         {/* Action Buttons */}
         <div className="grid grid-cols-2 gap-6 mb-8">
           {[
-            { title: "ADD MENU ITEM", icon: "➕" },
-            { title: "ADD RESERVATION", icon: "📅" }
+            { title: "ADD MENU ITEM", icon: "➕", onClick: () => setShowAddMenuModal(true) },
+            { title: "ADD RESERVATION", icon: "📅", onClick: () => {/* your reservation handler */} }
           ].map((button, index) => (
             <div key={index} className="bg-[#1d2b2f] rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-800">
-              <button className="w-full p-6 flex items-center justify-center space-x-3">
+              <button 
+                onClick={button.onClick}
+                className="w-full hover:cursor-pointer p-6 flex items-center justify-center space-x-3"
+              >
                 <span className="text-2xl">{button.icon}</span>
                 <span className="text-lg font-semibold text-orange-400">{button.title}</span>
               </button>
             </div>
           ))}
         </div>
+
+        {/* Add the modal component */}
+        <AddMenuModal
+          show={showAddMenuModal}
+          onClose={() => setShowAddMenuModal(false)}
+          form={menuItemForm}
+          setForm={setMenuItemForm}
+          categories={categories}
+          onSubmit={handleAddMenuItem}
+        />
+
         {/* Bottom Grid */}
         <div className="grid grid-cols-2 gap-6">
           <div className="bg-[#1d2b2f] p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-800">
@@ -291,7 +459,6 @@ const [dashboardStats, setDashboardStats] = useState({
             </div>
           </div>
         </div>
-        {/* ...rest of your existing JSX... */}
       </div>
     </div>
   );
