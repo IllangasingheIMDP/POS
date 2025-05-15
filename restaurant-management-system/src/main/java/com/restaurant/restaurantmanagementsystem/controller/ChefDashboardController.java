@@ -11,7 +11,7 @@ import java.util.Map;
 public class ChefDashboardController {
 
     @GetMapping("/dashboard")
-    @PreAuthorize("hasRole('CHEF')")
+    @PreAuthorize("hasAnyRole('CHEF')")
     public Map<String, Object> getChefDashboard() {
         // Return chef dashboard data
         return Map.of(

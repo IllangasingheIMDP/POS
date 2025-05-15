@@ -13,19 +13,19 @@ public class ReservationController {
     private ReservationService reservationService;
 
     @GetMapping
-    @PreAuthorize("hasRole('ADMIN','CASHIER','CHEF')")
+    @PreAuthorize("hasAnyRole('ADMIN','CASHIER','CHEF')")
     public List<ReservationDTO> getAll() {
         return reservationService.getAllReservations();
     }
 
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN','CASHIER','CHEF')")
+    @PreAuthorize("hasAnyRole('ADMIN','CASHIER','CHEF')")
     public ReservationDTO create(@RequestBody ReservationDTO dto) {
         return reservationService.createReservation(dto);
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN','CASHIER','CHEF')")
+    @PreAuthorize("hasAnyRole('ADMIN','CASHIER','CHEF')")
     public void delete(@PathVariable Long id) {
         reservationService.deleteReservation(id);
     }

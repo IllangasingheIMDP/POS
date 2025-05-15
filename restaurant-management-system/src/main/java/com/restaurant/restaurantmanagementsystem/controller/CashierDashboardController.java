@@ -11,7 +11,7 @@ import java.util.Map;
 public class CashierDashboardController {
 
     @GetMapping("/dashboard")
-    @PreAuthorize("hasRole('CASHIER')")
+    @PreAuthorize("hasAnyRole('CASHIER')")
     public Map<String, Object> getCashierDashboard() {
         // Return cashier dashboard data
         return Map.of(

@@ -7,6 +7,7 @@ import ChefDashboard from './pages/ChefDashboard';
 import AdminDashboard from './pages/AdminDashboard';
 import Unauthorized from './pages/Unauthorized';
 import { fetchUser } from './store/userSlice';
+import MenuManagement from './pages/admin/menuManage';
 import Login from './pages/login';
 function App() {
   const dispatch = useDispatch();
@@ -27,6 +28,8 @@ function App() {
       </Route>
       <Route element={<ProtectedRoute allowedRoles={['ADMIN']} />}>
         <Route path="/admin" element={<AdminDashboard />} />
+        <Route path="/admin/dashboard" element={<AdminDashboard />} />
+        <Route path="/admin/menu" element={<MenuManagement />} />
       </Route>
       <Route path="/unauthorized" element={<Unauthorized />} />
       

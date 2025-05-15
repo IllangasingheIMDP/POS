@@ -15,24 +15,24 @@ public class OrderController {
     private OrderService orderService;
 
     @GetMapping
-    @PreAuthorize("hasRole('ADMIN','CASHIER','CHEF')")
+    @PreAuthorize("hasAnyRole('ADMIN','CASHIER','CHEF')")
     public List<OrderDTO> getAll() {
         return orderService.getAllOrders();
     }
 
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN','CASHIER','CHEF')")
+    @PreAuthorize("hasAnyRole('ADMIN','CASHIER','CHEF')")
     public OrderDTO create(@RequestBody OrderDTO dto) {
         return orderService.createOrder(dto);
     }
 
     @PostMapping("/place")
-    @PreAuthorize("hasRole('ADMIN','CASHIER','CHEF')")
+    @PreAuthorize("hasAnyRole('ADMIN','CASHIER','CHEF')")
     public OrderDTO placeOrder(@RequestBody PlaceOrderRequest request)
     { return orderService.placeOrder(request); }
 
     @PutMapping("/status")
-    @PreAuthorize("hasRole('ADMIN','CASHIER','CHEF')")
+    @PreAuthorize("hasAnyRole('ADMIN','CASHIER','CHEF')")
     public OrderDTO updateStatus(@RequestBody UpdateOrderStatusRequest req)
     { return orderService.updateOrderStatus(req); }
 

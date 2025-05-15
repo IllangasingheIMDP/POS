@@ -20,7 +20,7 @@ public class ImageUploadController {
     private final String uploadDir = "uploads";
 
     @PostMapping("/images")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<String> uploadImage(@RequestParam("file") MultipartFile file) {
         try {
             Path uploadPath = Paths.get(uploadDir);
@@ -39,7 +39,7 @@ public class ImageUploadController {
     }
 
     @GetMapping("/images/{filename}")
-    @PreAuthorize("hasRole('ADMIN','CASHIER','CHEF')")
+    @PreAuthorize("hasAnyRole('ADMIN','CASHIER','CHEF')")
     public ResponseEntity<Resource> getImage(@PathVariable String filename) {
         try {
             Path filePath = Paths.get(uploadDir).resolve(filename).normalize();
