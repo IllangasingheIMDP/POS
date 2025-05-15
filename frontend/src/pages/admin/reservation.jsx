@@ -107,10 +107,11 @@ const Reservation = () => {
   };
 
   return (
-    <div className="menu-page flex min-h-screen h-auto p-10 bg-[#0B161A] text-white">
-      <div className="w-full h-fit relative bg-[#141E20] rounded-lg p-6 font-['Inter']">
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="text-white text-xl font-semibold">Reservation Management</h1>
+    <div className="menu-page w-full flex min-h-screen h-auto p-8 bg-[#0B161A] text-white">
+      <div className="w-full h-fit relative bg-[#141E20] rounded-2xl p-8 font-['Inter']">
+        <div className="flex-col justify-between items-center mb-8">
+          <h1 className="text-white text-3xl font-semibold">Reservation Management</h1>
+          <hr className='w-full border-t-2 mt-2 border-orange-400' />
         </div>
         {/* Filter Section */}
         <div className="grid grid-cols-4 gap-4 mb-6">

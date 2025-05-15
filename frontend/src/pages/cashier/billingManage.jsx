@@ -147,8 +147,8 @@ const BillingManage = () => {
         document.body.removeChild(link);
     };
     return (
-        <div className="flex min-h-screen w-full bg-gradient-to-br from-[#0B161A] to-[#1a2428] p-6">
-            <div className="flex-1 bg-[#141E20] rounded-2xl shadow-2xl p-6 backdrop-blur-sm">
+        <div className="flex min-h-screen w-full bg-gradient-to-br from-[#0B161A] to-[#1a2428] p-8">
+            <div className="flex-1 bg-[#141E20] rounded-2xl shadow-2xl p-8 backdrop-blur-sm">
                 {/* Header Stats Section */}
                  <div className="flex-col justify-between items-center mb-6">
           <h1 className="text-white text-4xl px-2 font-semibold">Invoices</h1>
