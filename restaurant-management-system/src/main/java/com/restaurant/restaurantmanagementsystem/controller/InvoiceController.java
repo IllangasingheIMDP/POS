@@ -1,5 +1,6 @@
 package com.restaurant.restaurantmanagementsystem.controller;
 import com.restaurant.restaurantmanagementsystem.dto.InvoiceDTO;
+import com.restaurant.restaurantmanagementsystem.dto.InvoiceWithOrderDTO;
 import com.restaurant.restaurantmanagementsystem.service.InvoiceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -14,8 +15,8 @@ public class InvoiceController {
 
     @GetMapping
     @PreAuthorize("hasAnyRole('ADMIN','CASHIER','CHEF')")
-    public List<InvoiceDTO> getAll() {
-        return invoiceService.getAllInvoices();
+    public List<InvoiceWithOrderDTO> getAll() {
+         return invoiceService.getAllInvoicesWithOrderDetails();
     }
 
     @PostMapping

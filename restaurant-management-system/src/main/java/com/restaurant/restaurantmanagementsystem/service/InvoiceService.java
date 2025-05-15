@@ -1,5 +1,6 @@
 package com.restaurant.restaurantmanagementsystem.service;
 import com.restaurant.restaurantmanagementsystem.dto.InvoiceDTO;
+import com.restaurant.restaurantmanagementsystem.dto.InvoiceWithOrderDTO;
 import com.restaurant.restaurantmanagementsystem.mapper.InvoiceMapper;
 import com.restaurant.restaurantmanagementsystem.model.Invoice;
 import com.restaurant.restaurantmanagementsystem.model.Order;
@@ -27,6 +28,23 @@ public class InvoiceService {
         return invoiceRepo.findAll().stream()
                 .map(InvoiceMapper::toDTO)
                 .collect(Collectors.toList());
+    }
+     public List<InvoiceWithOrderDTO> getAllInvoicesWithOrderDetails() {
+        return invoiceRepo.findAll().stream()
+            .map(invoice -> {
+                Order order = invoice.getOrder();
+                return InvoiceWithOrderDTO.builder()
+                    .id(invoice.getId())
+                    .orderId(invoice.getOrder().getId())
+                    .paymentId(invoice.getPayment().getId())
+                    .totalAmount(invoice.getTotalAmount())
+                    .issuedAt(invoice.getIssuedAt())
+                    .customerName(order.getCustomerName())
+                    .orderStatus(order.getStatus())
+                    .orderTotalPrice(order.getTotalPrice())
+                    .build();
+            })
+            .collect(Collectors.toList());
     }
 
     public InvoiceDTO generateInvoice(Long orderId, Long paymentId) {
