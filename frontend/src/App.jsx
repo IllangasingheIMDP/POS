@@ -8,7 +8,9 @@ import AdminDashboard from './pages/AdminDashboard';
 import Unauthorized from './pages/Unauthorized';
 import { fetchUser } from './store/userSlice';
 import MenuManagement from './pages/admin/menuManage';
+import StaffManage from './pages/admin/staffManage';
 import Login from './pages/login';
+import InventoryManagement from './pages/admin/inventoryManage';
 function App() {
   const dispatch = useDispatch();
 
@@ -30,6 +32,8 @@ function App() {
         <Route path="/admin" element={<AdminDashboard />} />
         <Route path="/admin/dashboard" element={<AdminDashboard />} />
         <Route path="/admin/menu" element={<MenuManagement />} />
+        <Route path="/admin/staff" element={<StaffManage />} />
+        <Route path="/admin/inventory" element={<InventoryManagement />} />
       </Route>
       <Route path="/unauthorized" element={<Unauthorized />} />
       

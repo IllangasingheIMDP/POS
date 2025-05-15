@@ -23,6 +23,7 @@ public class StaffController {
 
     @PostMapping
     public StaffDTO create(@RequestBody StaffDTO dto, @RequestParam String password) {
+        System.out.println("Creating staff with password: " + dto);
         return staffService.createStaff(dto, password);
     }
 
