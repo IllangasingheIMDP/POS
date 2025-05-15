@@ -23,6 +23,7 @@ const AdminDashboard = () => {
         }
         const data = await response.data;
         setDashboardData(data);
+        
         setLoading(false);
       } catch (err) {
         setError(err.message);
@@ -156,7 +157,8 @@ const AdminDashboard = () => {
               <div className="space-y-4">
                 {bestsellers.map((item, index) => (
                   <div key={index} className="flex items-center p-4 bg-neutral-800 rounded-lg">
-                    <img src={`${item.itemImage}`} alt={item.itemName} 
+                    <img  src={item.imageFilename ? `http://localhost:8080/api/uploads/images/${item.imageFilename}` : '/apple.jpeg'}
+                      alt={item.itemName}
                          className="w-16 h-16 rounded-full mr-4 object-cover" />
                     <div>
                       <h3 className="font-medium text-white">{item.itemName}</h3>
