@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { logout } from '../store/userSlice';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 const Sidebar = () => {
-  const navigate=useNavigate()
+  const navigate = useNavigate()
+  const location = useLocation();
   const role = useSelector((state) => state.user.role);
   const dispatch = useDispatch();
 
@@ -15,7 +16,7 @@ const Sidebar = () => {
       { icon: '/Inventory.svg', text: 'Inventory', link: '/admin/inventory' },
       { icon: '/reservationIcon.svg', text: 'Reservations', link: '/admin/reservation' },
       { icon: '/reportAnalyticsIcon.svg', text: 'Report Analytics', link: '#' },
-      
+
       { icon: '/notification.svg', text: 'Notifications', link: '#' },
       { icon: '/settings.svg', text: 'Setting', link: '#' },
       { icon: '/logout.svg', text: 'logout', link: '#' },
@@ -32,7 +33,7 @@ const Sidebar = () => {
       { icon: '/logout.svg', text: 'logout', link: '#' },
     ],
     CHEF: [
-       { icon: '/dashboardIcon.svg', text: 'Dashboard', link: '/chef' },
+      { icon: '/dashboardIcon.svg', text: 'Dashboard', link: '/chef' },
       { icon: '/orderIcon.svg', text: 'Ongoing Orders', link: '#' },
       { icon: '/completedOrdersIcon.svg', text: 'Completed Orders', link: '#' },
       { icon: '/newOrdersIcon.svg', text: 'New Orders', link: '#' },
@@ -45,7 +46,15 @@ const Sidebar = () => {
 
   const items = sidebarItems[role] || [];
   const [activeItem, setActiveItem] = useState(items[0]?.text || '');
-
+  useEffect(() => {
+    const currentItem = items.find((item) => item.link === location.pathname);
+    if (currentItem) {
+      setActiveItem(currentItem.text);
+    } else {
+      // Fallback to first item if no match is found
+      setActiveItem(items[0]?.text || '');
+    }
+  }, [location.pathname, items]);
   return (
     <div className="w-72 min-w-72 bg-[#141E20] py-4 pl-4 min-h-screen">
       <div className="flex items-center mb-6">
@@ -56,9 +65,8 @@ const Sidebar = () => {
         {items.map((item, index) => (
           <div
             key={index}
-            className={`flex items-center px-2 py-3 cursor-pointer ${
-              activeItem === item.text ? 'bg-[#0B161A] rounded-l-3xl' : ''
-            }`}
+            className={`flex items-center pl-5 py-3 cursor-pointer ${activeItem === item.text ? 'bg-[#0B161A] rounded-l-3xl' : ''
+              }`}
             onClick={() => {
               if (item.text === 'logout') {
                 dispatch(logout());
@@ -68,7 +76,7 @@ const Sidebar = () => {
               }
             }}
           >
-            <img src={item.icon} alt={item.text} className={`w-7 h-7 mr-2 text-purple-500` } />
+            <img src={item.icon} alt={item.text} className={`w-7 h-7 mr-2 text-purple-500`} />
             <span
               className={
                 activeItem === item.text
