@@ -39,9 +39,10 @@ public class SecurityConfig {
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/auth/**").permitAll()
-                .requestMatchers("/api/admin/**").hasAnyRole("ADMIN")
-                .requestMatchers("/api/chef/**").hasAnyRole("CHEF", "ADMIN")
-                .requestMatchers("/api/cashier/**").hasAnyRole("CASHIER", "ADMIN")
+                .requestMatchers("/uploads/**").permitAll()
+                .requestMatchers("/api/admin/**").hasAnyRole("ADMIN", "CHEF", "CASHIER")
+                .requestMatchers("/api/chef/**").hasAnyRole("CHEF", "ADMIN", "CASHIER")
+                .requestMatchers("/api/cashier/**").hasAnyRole("CASHIER", "ADMIN", "CHEF")
                 .requestMatchers("/api/reports/**").authenticated() // Add this for baseline protection
                 .anyRequest().authenticated()
             )

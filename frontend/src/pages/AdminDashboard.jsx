@@ -45,7 +45,7 @@ const AdminDashboard = () => {
 
   return (
     <div className="flex min-h-screen bg-neutral-900 text-white overflow-hidden">
-      <Sidebar />
+      
       <div className="flex-1 p-6">
         <Header title={'Dashboard'} />
         <div className="grid grid-cols-4 gap-6 mb-6">

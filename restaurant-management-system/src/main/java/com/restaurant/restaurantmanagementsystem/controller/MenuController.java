@@ -43,6 +43,8 @@ public class MenuController {
             @RequestParam(value = "image", required = false) MultipartFile image
     ) {
         MenuItemDTO dto = menuService.createMenuItemWithImage(name, price, categoryId, description, available, image);
+        System.out.println("Created new menu item: " + dto);
+        // Log the creation of the new menu item
         return ResponseEntity.ok(dto);
     }
 

@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Navigate, Outlet } from 'react-router-dom';
 import { fetchUser } from '../store/userSlice';
-
+import Sidebar from './sidebar';
 const ProtectedRoute = ({ allowedRoles }) => {
   const dispatch = useDispatch();
   const { username, role } = useSelector((state) => state.user);
@@ -21,7 +21,12 @@ const ProtectedRoute = ({ allowedRoles }) => {
     return <Navigate to="/unauthorized" replace />;
   }
 
-  return <Outlet />;
+  return (
+    <div className="flex min-h-screen bg-neutral-900 text-white">
+      <Sidebar />
+      <Outlet />
+    </div>
+  );
 };
 
 export default ProtectedRoute;

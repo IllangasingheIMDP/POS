@@ -1,15 +1,16 @@
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { logout } from '../store/userSlice';
-
+import { useNavigate } from 'react-router-dom';
 const Sidebar = () => {
+  const navigate=useNavigate()
   const role = useSelector((state) => state.user.role);
   const dispatch = useDispatch();
 
   const sidebarItems = {
     ADMIN: [
-      { icon: '/dashboardIcon.svg', text: 'Dashboard', link: '#' },
-      { icon: '/menuIcon.svg', text: 'Menu manage', link: '#' },
+      { icon: '/dashboardIcon.svg', text: 'Dashboard', link: '/admin' },
+      { icon: '/menuIcon.svg', text: 'Menu manage', link: '/admin/menu' },
       { icon: '/staffIcon.svg', text: 'Staff manage', link: '#' },
       { icon: '/Inventory.svg', text: 'Inventory', link: '#' },
       { icon: '/reservationIcon.svg', text: 'Reservations', link: '#' },
@@ -61,6 +62,7 @@ const Sidebar = () => {
               if (item.text === 'logout') {
                 dispatch(logout());
               } else {
+                navigate(item.link)
                 setActiveItem(item.text);
               }
             }}
