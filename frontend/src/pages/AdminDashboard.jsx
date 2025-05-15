@@ -44,9 +44,9 @@ const AdminDashboard = () => {
   const { stats, recentOrders, bestsellers } = dashboardData;
 
   return (
-    <div className="flex min-h-screen bg-neutral-900 text-white overflow-hidden">
+    <div className="flex min-h-screen p-10 bg-[#0B161A] text-white overflow-hidden">
       
-      <div className="flex-1 p-6">
+      <div className="flex-1 p-6 bg-[#141E20] rounded-lg">
         <Header title={'Dashboard'} />
         <div className="grid grid-cols-4 gap-6 mb-6">
           <div className="bg-zinc-900 p-4 rounded-md shadow-[0px_4px_4px_0px_rgba(0,0,0,0.25)]">
