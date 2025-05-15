@@ -5,6 +5,7 @@ const ChefDashboard = () => {
   const today = new Date();
   const options = { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' };
   const formattedDate = today.toLocaleDateString(undefined, options);
+  
   const [dashboardStats, setDashboardStats] = useState({
     totalOrders: 0,
     inventoryAlerts: 0,
@@ -14,72 +15,82 @@ const ChefDashboard = () => {
   });
 
   const [liveOrders, setLiveOrders] = useState([]);
+  const [inventoryAlerts, setInventoryAlerts] = useState([]);
+  const [selectedStatus, setSelectedStatus] = useState('PENDING');
 
   useEffect(() => {
-    // Simulated API call for dashboard stats
-    const fetchDashboardStats = () => {
-      // Simulate API response
-      const mockStats = {
-        totalOrders: 156,
-        inventoryAlerts: 4,
-        inProgress: 8,
-        completedOrders: 148,
-        dailyEarnings: 78500
-      };
-      setDashboardStats(mockStats);
-    };
-
-    // Simulated API call for live orders
-    const fetchLiveOrders = () => {
-      const mockOrders = [
-        {
-          id: "ORD001",
-          time: "10:30 AM",
-          dish: "Grilled Salmon",
-          table: "Table 12",
-          status: "In prep",
-          priority: "high"
-        },
-        {
-          id: "ORD002",
-          time: "10:45 AM",
-          dish: "Chicken Alfredo",
-          table: "Takeaway #45",
-          status: "New",
-          priority: "medium"
-        },
-        {
-          id: "ORD003",
-          time: "10:15 AM",
-          dish: "Caesar Salad",
-          table: "Table 08",
-          status: "Done",
-          priority: "low"
-        },
-        {
-          id: "ORD004",
-          time: "10:50 AM",
-          dish: "Beef Steak",
-          table: "Table 15",
-          status: "Pending",
-          priority: "high"
-        },
-        {
-          id: "ORD005",
-          time: "10:20 AM",
-          dish: "Seafood Pasta",
-          table: "Table 03",
-          status: "Cancelled",
-          priority: "medium"
-        }
-      ];
-      setLiveOrders(mockOrders);
-    };
-
-    fetchDashboardStats();
-    fetchLiveOrders();
+    fetchOrders();
+    fetchInventoryAlerts();
   }, []);
 
+  // Fetch orders and calculate stats
+  const fetchOrders = async () => {
+    try {
+      const response = await api.get('/orders');
+      const orders = response.data;
+      
+      
+      // Filter orders for today
+      const today = new Date().setHours(0, 0, 0, 0);
+      const todaysOrders = orders.filter(order => {
+        const orderDate = new Date(order.createdTime).setHours(0, 0, 0, 0);
+        return orderDate === today;
+      });
+
+      setLiveOrders(todaysOrders);
+
+      // Calculate dashboard stats with correct status counting
+      const totalOrders = todaysOrders.length;
+      const inProgress = todaysOrders.filter(order => 
+        ['PREPARING', 'PENDING', 'IN_PROGRESS'].includes(order.status)
+      ).length;
+      const completed = todaysOrders.filter(order => order.status === 'COMPLETED').length;
+      const dailyTotal = todaysOrders
+        .filter(order => order.status === 'COMPLETED')
+        .reduce((sum, order) => sum + order.totalPrice, 0);
+
+      setDashboardStats(prev => ({
+        ...prev,
+        totalOrders,
+        inProgress,
+        completedOrders: completed,
+        dailyEarnings: dailyTotal
+      }));
+    } catch (error) {
+      console.error('Error fetching orders:', error);
+    }
+  };
+
+  // Fetch inventory alerts
+  const fetchInventoryAlerts = async () => {
+    try {
+      const response = await api.get('/inventory');
+      const lowStockItems = response.data.filter(item => item.quantity <= item.threshold);
+      setInventoryAlerts(lowStockItems);
+      
+      setDashboardStats(prev => ({
+        ...prev,
+        inventoryAlerts: lowStockItems.length
+      }));
+    } catch (error) {
+      console.error('Error fetching inventory:', error);
+    }
+  };
+
+  // Handle order status updates
+  const handleOrderStatusUpdate = async (orderId, newStatus) => {
+    try {
+      await api.put(`/orders/status`, {
+        orderId,
+        status: newStatus
+      });
+      await fetchOrders(); // Refresh orders after update
+    } catch (error) {
+      console.error('Error updating order status:', error);
+    }
+  };
+
+  // Update the Orders Section JSX
   return (
     <div className='flex min-h-screen bg-gradient-to-br from-[#0B161A] to-[#1a2428] p-8'>
       <div className="flex-1 bg-[#141E20]/90 rounded-2xl shadow-2xl p-8 backdrop-blur-sm">
@@ -99,104 +110,153 @@ const ChefDashboard = () => {
 
         {/* Stats Grid */}
         <div className="grid grid-cols-5 gap-6 mb-8">
-          <div className="bg-[#1d2b2f] p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-800">
-            <p className="text-lg font-medium text-gray-300">Total Orders</p>
-            <p className="text-2xl font-bold mt-2 text-white">{dashboardStats.totalOrders}</p>
-          </div>
-          <div className="bg-[#1d2b2f] p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-800">
-            <p className="text-lg font-medium text-gray-300">Inventory Alerts</p>
-            <p className="text-2xl font-bold mt-2 text-red-400">{dashboardStats.inventoryAlerts}</p>
-          </div>
-          <div className="bg-[#1d2b2f] p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-800">
-            <p className="text-lg font-medium text-gray-300">In Progress</p>
-            <p className="text-2xl font-bold mt-2 text-blue-400">{dashboardStats.inProgress}</p>
-          </div>
-          <div className="bg-[#1d2b2f] p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-800">
-            <p className="text-lg font-medium text-gray-300">Completed Orders</p>
-            <p className="text-2xl font-bold mt-2 text-green-400">{dashboardStats.completedOrders}</p>
-          </div>
-          <div className="bg-[#1d2b2f] p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-800">
-            <p className="text-lg font-medium text-orange-400">Daily Earnings</p>
-            <p className="text-2xl font-bold mt-2 text-orange-400">
-              {dashboardStats.dailyEarnings.toLocaleString()} LKR
-            </p>
-          </div>
-        </div>
-
-        {/* Live Order Section */}
-        <div className="bg-[#1d2b2f] p-8 rounded-xl shadow-lg border border-gray-800">
-          <h2 className="text-2xl font-bold mb-6 text-white">Live Orders</h2>
-          <div className="grid grid-cols-5 gap-6 mb-4 border-b border-gray-800 pb-4">
-            {['Time', 'Dish', 'Table/Order', 'Status', 'Action'].map((header) => (
-              <div key={header} className="text-lg font-semibold text-orange-400">
-                {header}
-              </div>
-            ))}
-          </div>
-
-          {/* Order Status Rows */}
-          {liveOrders.map((order) => (
-            <div key={order.id}
-              className="grid grid-cols-5 gap-6 py-4 border-b border-gray-800/50 hover:bg-[#243236] rounded-lg transition-colors duration-200">
-              <div className="text-gray-300">{order.time}</div>
-              <div className="text-gray-300">{order.dish}</div>
-              <div className="text-gray-300">{order.table}</div>
-              <div className="flex items-center">
-                {order.status === 'Pending' || order.status === 'Cancelled' ? (
-                  <div className={`px-4 py-2 rounded-full text-sm font-medium ${order.status === 'Pending' ? 'bg-slate-700 text-teal-400' : 'bg-red-600/20 text-red-400'
-                    }`}>
-                    {order.status}
-                  </div>
-                ) : (
-                  <div className="flex items-center">
-                    <div className={`w-3 h-3 rounded-full mr-3 ${order.status === 'In prep' ? 'bg-red-500' :
-                        order.status === 'New' ? 'bg-blue-500' : 'bg-green-500'
-                      }`} />
-                    <span className="text-gray-300">{order.status}</span>
-                  </div>
-                )}
-              </div>
-              <div className="flex space-x-4">
-                {order.status === 'Pending' && (
-                  <>
-                    <button className="flex items-center hover:cursor-pointer  text-green-400 hover:text-green-300">
-                      <div className="w-2 h-2 bg-green-400 rounded-full mr-2" />
-                      Accept
-                    </button>
-                    <button className="flex items-center hover:cursor-pointer  text-red-400 hover:text-red-300">
-                      <div className="w-2 h-2 bg-red-400 rounded-full mr-2" />
-                      Cancel
-                    </button>
-                  </>
-                )}
-                {order.status === 'In prep' && (
-                  <button className="text-blue-400 hover:cursor-pointer  hover:text-blue-300">Mark Done</button>
-                )}
-                {order.status === 'New' && (
-                  <button className="text-green-400 hover:cursor-pointer  hover:text-green-300">Start Cooking</button>
-                )}
-                {order.status === 'Done' && (
-                  <button className="text-gray-400 hover:cursor-pointer  hover:text-gray-300">View Details</button>
-                )}
-              </div>
+          {[
+            { title: "Total Orders", value: dashboardStats.totalOrders, className: "text-white" },
+            { title: "Inventory Alerts", value: dashboardStats.inventoryAlerts, className: "text-red-400" },
+            { title: "In Progress", value: dashboardStats.inProgress, className: "text-blue-400" },
+            { title: "Completed Orders", value: dashboardStats.completedOrders, className: "text-green-400" },
+            { title: "Daily Revenue", value: `${dashboardStats.dailyEarnings.toLocaleString()} LKR`, className: "text-orange-400" }
+          ].map((stat, index) => (
+            <div key={index} className="bg-[#1d2b2f] p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-800">
+              <p className="text-lg font-medium text-gray-300">{stat.title}</p>
+              <p className={`text-2xl font-bold mt-2 ${stat.className}`}>{stat.value}</p>
             </div>
           ))}
         </div>
 
-        {/* Order Tracking */}
-        <div className="mt-8 bg-[#1d2b2f] p-6 rounded-xl shadow-lg border border-gray-800 flex items-center">
-          <span className="text-xl font-medium text-white mr-6">Track by Order ID</span>
-          <div className="relative">
-            <div className="w-80 h-12 bg-orange-400/10 rounded-lg flex items-center px-4 border border-orange-400/20">
-              <span className="text-orange-400 text-sm font-semibold mr-2">#</span>
-              <input
-                type="text"
-                className="bg-transparent outline-none w-full text-white"
-                placeholder="Enter Order ID"
-              />
+        {/* Live Orders Section */}
+        <div className="bg-[#1d2b2f] p-8 rounded-xl shadow-lg border border-gray-800">
+          <div className="flex flex-col space-y-6">
+            <div className="flex justify-between items-center">
+              <h2 className="text-2xl font-bold text-white">Live Orders</h2>
+              
+              {/* Updated Filter Section */}
+              <div className="bg-[#141E20] p-1 rounded-xl flex space-x-1">
+                {['PENDING', 'PREPARING', 'COMPLETED', 'CANCELLED'].map((status) => (
+                  <button
+                    key={status}
+                    onClick={() => setSelectedStatus(status)}
+                    className={`px-6 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+                      selectedStatus === status
+                        ? 'bg-orange-500 text-white shadow-lg transform scale-105'
+                        : 'text-gray-400 hover:bg-[#1a2428] hover:text-gray-300'
+                    }`}
+                  >
+                    {status === 'PENDING' && '🕒 '}
+                    {status === 'PREPARING' && '👨‍🍳 '}
+                    {status === 'COMPLETED' && '✅ '}
+                    {status === 'CANCELLED' && '❌ '}
+                    {status.charAt(0) + status.slice(1).toLowerCase()}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Orders Table */}
+            <div className="overflow-hidden rounded-xl border border-gray-800">
+              <div className="grid grid-cols-5 gap-6 bg-[#141E20] p-4">
+                {['Time', 'Items', 'Table/Order', 'Status', 'Action'].map((header) => (
+                  <div key={header} className="text-sm font-semibold text-orange-400">
+                    {header}
+                  </div>
+                ))}
+              </div>
+
+              <div className="divide-y divide-gray-800">
+                {liveOrders
+                  .filter(order => order.status === selectedStatus)
+                  .map((order) => (
+                    <div key={order.id}
+                      className="grid grid-cols-5 gap-6 p-4 hover:bg-[#243236] transition-colors duration-200"
+                    >
+                      <div className="text-gray-300 text-sm">
+                        {new Date(order.createdTime).toLocaleTimeString()}
+                      </div>
+                      <div className="text-gray-300 text-sm">
+                        {order.items.map(item => item.name || item.itemName).join(', ')}
+                      </div>
+                      <div className="text-gray-300 text-sm">
+                        {order.orderType === 'DINE_IN' ? (
+                          <span className="flex items-center">
+                            <span className="w-2 h-2 bg-orange-400 rounded-full mr-2"/>
+                            Table {order.tableNumber}
+                          </span>
+                        ) : (
+                          <span className="flex items-center">
+                            <span className="w-2 h-2 bg-blue-400 rounded-full mr-2"/>
+                            Takeaway
+                          </span>
+                        )}
+                      </div>
+                      <div className="flex items-center">
+                        <div className={`px-3 py-1 rounded-full text-xs font-medium ${
+                          order.status === 'PENDING' ? 'bg-orange-500/20 text-orange-400' :
+                          order.status === 'PREPARING' ? 'bg-blue-500/20 text-blue-400' :
+                          order.status === 'COMPLETED' ? 'bg-green-500/20 text-green-400' :
+                          'bg-red-500/20 text-red-400'
+                        }`}>
+                          {order.status}
+                        </div>
+                      </div>
+                      <div className="flex space-x-2">
+                        {order.status === 'PENDING' && (
+                          <>
+                            <button 
+                              onClick={() => handleOrderStatusUpdate(order.id, 'PREPARING')}
+                              className="px-3 py-1 bg-green-500/10 text-green-400 rounded-lg text-sm hover:bg-green-500/20 transition-colors"
+                            >
+                              Accept
+                            </button>
+                            <button 
+                              onClick={() => handleOrderStatusUpdate(order.id, 'CANCELLED')}
+                              className="px-3 py-1 bg-red-500/10 text-red-400 rounded-lg text-sm hover:bg-red-500/20 transition-colors"
+                            >
+                              Cancel
+                            </button>
+                          </>
+                        )}
+                        {order.status === 'PREPARING' && (
+                          <>
+                            <button 
+                              onClick={() => handleOrderStatusUpdate(order.id, 'COMPLETED')}
+                              className="px-3 py-1 bg-blue-500/10 text-blue-400 rounded-lg text-sm hover:bg-blue-500/20 transition-colors"
+                            >
+                              Complete
+                            </button>
+                            <button 
+                              onClick={() => handleOrderStatusUpdate(order.id, 'CANCELLED')}
+                              className="px-3 py-1 bg-red-500/10 text-red-400 rounded-lg text-sm hover:bg-red-500/20 transition-colors"
+                            >
+                              Cancel
+                            </button>
+                          </>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+              </div>
             </div>
           </div>
-          <span className="ml-6 text-base text-gray-400">Result: Order #112 in "In Progress"</span>
+        </div>
+
+        {/* Order Tracking Section */}
+        <div className="mt-8 bg-[#1d2b2f] p-6 rounded-xl shadow-lg border border-gray-800">
+          <h2 className="text-xl font-bold mb-6 text-white">Inventory Alerts</h2>
+          <div className="grid grid-cols-3 gap-4">
+            {inventoryAlerts.map((item) => (
+              <div key={item.id} className="bg-red-500/10 p-4 rounded-lg border border-red-500/20">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-orange-400 font-medium">{item.name}</h3>
+                  <span className="px-2 py-1 bg-red-500/20 text-red-400 rounded-full text-xs">
+                    Low Stock
+                  </span>
+                </div>
+                <p className="text-sm text-gray-400 mt-2">
+                  Quantity: {item.quantity} / Threshold: {item.threshold}
+                </p>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </div>
