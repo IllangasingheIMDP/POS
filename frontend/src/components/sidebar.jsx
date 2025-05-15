@@ -11,7 +11,7 @@ const Sidebar = () => {
     ADMIN: [
       { icon: '/dashboardIcon.svg', text: 'Dashboard', link: '/admin' },
       { icon: '/menuIcon.svg', text: 'Menu manage', link: '/admin/menu' },
-      { icon: '/staffIcon.svg', text: 'Staff manage', link: '#' },
+      { icon: '/staffIcon.svg', text: 'Staff manage', link: '/admin/staff' },
       { icon: '/Inventory.svg', text: 'Inventory', link: '#' },
       { icon: '/reservationIcon.svg', text: 'Reservations', link: '#' },
       { icon: '/reportAnalyticsIcon.svg', text: 'Report Analytics', link: '#' },
