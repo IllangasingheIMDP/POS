@@ -77,14 +77,16 @@ const Sidebar = () => {
   }, [location.pathname, items]);
 
   return (
-    <div className="w-72 min-w-72 bg-[#141E20] py-4 pl-4 min-h-screen">
+    <div className="w-[80px] hover:w-72 min-h-screen bg-[#141E20] py-4 pl-4 transition-all duration-300 ease-in-out group">
       <div className="flex items-center mb-6">
         <img src="/logo.png" alt="logo" className="w-11 h-11 mr-2" />
-        <h1 className="text-2xl font-semibold">BISTROFY</h1>
+        <h1 className="text-2xl font-semibold opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+          BISTROFY
+        </h1>
       </div>
       <nav className="space-y-4">
         {items.map((item, index) => {
-          const Icon = item.icon; // Icon is now a React component
+          const Icon = item.icon;
           return (
             <div
               key={index}
@@ -101,18 +103,16 @@ const Sidebar = () => {
               }}
             >
               <Icon
-                className={`w-7 h-7 mr-2 ${
-                  activeItem === item.text
-                    ? 'text-orange-400'
-                    : 'text-white'
+                className={`w-7 h-7 mr-2 flex-shrink-0 ${
+                  activeItem === item.text ? 'text-orange-400' : 'text-white'
                 }`}
               />
               <span
-                className={
+                className={`${
                   activeItem === item.text
                     ? 'text-orange-400 text-shadow-md text-shadow-orange-800'
                     : 'text-white'
-                }
+                } opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap`}
               >
                 {item.text}
               </span>
