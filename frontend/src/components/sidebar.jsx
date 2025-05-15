@@ -103,7 +103,7 @@ const Sidebar = () => {
               }}
             >
               <Icon
-                className={`w-7 h-7 mr-2 flex-shrink-0 ${
+                className={`w-5 h-5 mr-2 flex-shrink-0 ${
                   activeItem === item.text ? 'text-orange-400' : 'text-white'
                 }`}
               />
@@ -112,7 +112,7 @@ const Sidebar = () => {
                   activeItem === item.text
                     ? 'text-orange-400 text-shadow-md text-shadow-orange-800'
                     : 'text-white'
-                } opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap`}
+                } opacity-0 text-sm group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap`}
               >
                 {item.text}
               </span>
