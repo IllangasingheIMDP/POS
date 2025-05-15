@@ -77,7 +77,7 @@ const MenuManagement = () => {
     const filteredItems = menuItems.filter(item => item.categoryName === selectedCategory);
 
     return (
-        <div className="menu-page w-full p-10 flex min-h-screen h-auto bg-[#0B161A] text-white">
+        <div className="menu-page w-full p-8 flex min-h-screen h-auto bg-[#0B161A] text-white">
             <style jsx>{`
         .menu-page::-webkit-scrollbar {
             width: 0; /* Hide scrollbar in Webkit browsers */
@@ -90,14 +90,17 @@ const MenuManagement = () => {
 
             <div className="w-full h-fit relative bg-[#141E20] rounded-2xl p-6 font-['Inter']">
                 {/* Header */}
+                <div className='flex-col'>
                 <div className="flex justify-between items-center mb-6">
                     <h1 className="text-white text-3xl font-semibold">Menu Management</h1>
                     <button
-                        className="bg-neutral-900 text-white text-sm hover:cursor-pointer font-bold py-2 px-4 rounded border border-stone-600/60"
+                        className="bg-orange-400 text-black text-sm hover:cursor-pointer font-bold py-2 px-4 rounded border border-stone-600/60"
                         onClick={() => setShowCategoryModal(true)}
                     >
                         Manage Categories
                     </button>
+                </div>
+                <hr className='w-full border-t-2 mt-2 border-orange-400' />
                 </div>
 
 

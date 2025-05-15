@@ -102,7 +102,7 @@ const OrderManage = () => {
                     <div className='flex-col'>
                         <h1 className="text-4xl font-bold font-['Inter'] text-white mb-2 px-2">Order Management</h1>
                         
-                        <p className="text-base text-gray-400 font-medium">{new Date().toLocaleDateString()}</p>
+                        
                         <hr className='w-full border-t-2 mt-2 border-orange-400' />
                     </div>
                     

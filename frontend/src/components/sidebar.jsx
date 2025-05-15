@@ -47,7 +47,7 @@ const Sidebar = () => {
   const [activeItem, setActiveItem] = useState(items[0]?.text || '');
 
   return (
-    <div className="w-72 bg-[#141E20] py-4 pl-4 min-h-screen">
+    <div className="w-72 min-w-72 bg-[#141E20] py-4 pl-4 min-h-screen">
       <div className="flex items-center mb-6">
         <img src="/logo.png" alt="logo" className="w-11 h-11 mr-2" />
         <h1 className="text-2xl font-semibold">BISTROFY</h1>

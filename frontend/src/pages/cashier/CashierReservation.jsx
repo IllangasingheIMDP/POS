@@ -61,8 +61,8 @@ const CashierReservation = () => {
   };
 
   return (
-    <div className="menu-page flex min-h-screen h-auto p-10 bg-[#0B161A] text-white">
-      <div className="w-full h-fit relative bg-[#141E20] rounded-lg p-6 font-['Inter']">
+     <div className='flex min-h-screen w-full bg-gradient-to-br from-[#0B161A] to-[#1a2428] p-8'>
+      <div className="flex-1 bg-[#141E20] rounded-2xl shadow-2xl p-8 backdrop-blur-sm">
         <div className="flex-col justify-between items-center mb-6">
           <h1 className="text-white text-4xl font-semibold px-2">Reservations</h1>
           <hr className='w-full border-t-2 mt-2 border-orange-400' />
@@ -72,12 +72,12 @@ const CashierReservation = () => {
         <div className="grid grid-cols-4 gap-4 mb-6">
           <div className="flex flex-col">
             <label className="text-white text-sm mb-2 font-medium">Date Range</label>
-            <div className="flex space-x-2 items-center">
+            <div className="flex space-x-0 items-center">
               <input
                 type="date"
                 value={startDate}
                 onChange={(e) => setStartDate(e.target.value)}
-                className="bg-orange-400 border border-orange-400 rounded-lg p-2 text-white text-sm w-full focus:outline-none focus:ring-2 focus:ring-orange-400"
+                className="bg-orange-400 border border-orange-400 rounded-lg p-2 text-white text-sm w-fit focus:outline-none focus:ring-2 focus:ring-orange-400"
                 placeholder="Start Date"
               />
               <span className="text-orange-400">-</span>
@@ -85,7 +85,7 @@ const CashierReservation = () => {
                 type="date"
                 value={endDate}
                 onChange={(e) => setEndDate(e.target.value)}
-                className="bg-orange-400 border border-orange-400 rounded-lg p-2 text-white text-sm w-full focus:outline-none focus:ring-2 focus:ring-orange-400"
+                className="bg-orange-400 border border-orange-400 rounded-lg p-2 text-white text-sm w-fit focus:outline-none focus:ring-2 focus:ring-orange-400"
                 placeholder="End Date"
               />
             </div>

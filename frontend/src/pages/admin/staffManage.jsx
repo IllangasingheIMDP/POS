@@ -108,8 +108,9 @@ const handleEdit = (staff) => {
             <div className="max-w-[1400px] mx-auto">
                 <div className="w-full h-fit bg-[#141E20] rounded-2xl p-8 shadow-lg">
                     {/* Header Section */}
-                    <div className="mb-8">
+                    <div className="mb-8 flex-col">
                         <h1 className="text-white text-3xl font-semibold">Staff Management</h1>
+                        <hr className='w-full border-t-2 mt-2 border-orange-400' />
                     </div>
 
                     {/* Search and Add New User Section */}
