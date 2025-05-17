@@ -10,6 +10,12 @@ const CashierReservation = () => {
   const [tableSize, setTableSize] = useState('');
   const [showModal, setShowModal] = useState(false);
   const [tables, setTables] = useState([]);
+  const [showTableModal, setShowTableModal] = useState(false);
+  const [newTable, setNewTable] = useState({
+    tableNumber: '',
+    capacity: '',
+    status: 'AVAILABLE'
+  });
 
   const [newReservation, setNewReservation] = useState({
     customerName: '',
@@ -91,6 +97,21 @@ const CashierReservation = () => {
       });
     } catch (error) {
       console.error('Error adding reservation:', error);
+    }
+  };
+
+  const handleAddTable = async () => {
+    try {
+      const response = await api.post('/tables', newTable);
+      setTables([...tables, response.data]);
+      setShowTableModal(false);
+      setNewTable({
+        tableNumber: '',
+        capacity: '',
+        status: 'AVAILABLE'
+      });
+    } catch (error) {
+      console.error('Error adding table:', error);
     }
   };
 
@@ -354,9 +375,18 @@ const CashierReservation = () => {
             </div>
           </div>
         )}
+        {/* Add New Table Button */}
+        <div className="mt-8 flex justify-between items-center">
+          <h2 className="text-white text-lg font-semibold">Tables Status</h2>
+          <button
+            onClick={() => setShowTableModal(true)}
+            className="bg-orange-400 hover:cursor-pointer hover:bg-orange-500 text-white rounded-lg px-4 py-2 text-sm font-medium transition-colors duration-200"
+          >
+            Add New Table
+          </button>
+        </div>
         {/* Tables Section */}
         <div className="mt-8">
-          <h2 className="text-white text-lg font-semibold mb-4">Tables Status</h2>
           <div className="grid grid-cols-4 gap-4">
             {tables.map((table) => (
               <div
@@ -387,6 +417,66 @@ const CashierReservation = () => {
           </div>
         </div>
       </div>
+      {/* Add New Table Modal */}
+      {showTableModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+          <div className="bg-[#1d2b2f] p-6 rounded-xl w-96">
+            <h2 className="text-xl font-semibold text-white mb-6">Add New Table</h2>
+            
+            <div className="space-y-4">
+              <div>
+                <label className="block text-gray-400 mb-2 text-sm">Table Number</label>
+                <input
+                  type="number"
+                  value={newTable.tableNumber}
+                  onChange={(e) => setNewTable({ ...newTable, tableNumber: parseInt(e.target.value) })}
+                  className="w-full bg-[#141E20] text-white rounded-lg p-3 border border-gray-700 focus:border-orange-500 focus:outline-none"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="block text-gray-400 mb-2 text-sm">Capacity</label>
+                <input
+                  type="number"
+                  value={newTable.capacity}
+                  onChange={(e) => setNewTable({ ...newTable, capacity: parseInt(e.target.value) })}
+                  className="w-full bg-[#141E20] text-white rounded-lg p-3 border border-gray-700 focus:border-orange-500 focus:outline-none"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="block text-gray-400 mb-2 text-sm">Status</label>
+                <select
+                  value={newTable.status}
+                  onChange={(e) => setNewTable({ ...newTable, status: e.target.value })}
+                  className="w-full bg-[#141E20] text-white rounded-lg p-3 border border-gray-700 focus:border-orange-500 focus:outline-none"
+                >
+                  <option value="AVAILABLE">Available</option>
+                  <option value="OCCUPIED">Occupied</option>
+                  <option value="RESERVED">Reserved</option>
+                </select>
+              </div>
+
+              <div className="flex justify-end space-x-3 mt-6">
+                <button
+                  onClick={() => setShowTableModal(false)}
+                  className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors duration-200"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleAddTable}
+                  className="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors duration-200"
+                >
+                  Add Table
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
