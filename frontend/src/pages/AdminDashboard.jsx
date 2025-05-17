@@ -10,6 +10,8 @@ const AdminDashboard = () => {
   const [dashboardData, setDashboardData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [orderStatusFilter, setOrderStatusFilter] = useState('ALL');
+  const [filteredOrders, setFilteredOrders] = useState([]);
 
   // Fetch dashboard data
   useEffect(() => {
@@ -33,8 +35,18 @@ const AdminDashboard = () => {
     fetchDashboardData();
   }, []);
 
+  // Replace the existing useEffect for filtering
+  useEffect(() => {
+    if (dashboardData?.recentOrders) {
+      setFilteredOrders(
+        orderStatusFilter === 'ALL' 
+          ? dashboardData.recentOrders 
+          : dashboardData.recentOrders.filter(order => order.status === orderStatusFilter)
+      );
+    }
+  }, [orderStatusFilter, dashboardData]);
 
-  // Loading and error states
+  // Move the destructuring after the error check
   if (loading) {
     return <div className="flex h-screen bg-neutral-900 text-white items-center justify-center">Loading...</div>;
   }
@@ -42,12 +54,13 @@ const AdminDashboard = () => {
     return <div className="flex h-screen bg-neutral-900 text-white items-center justify-center">Error: {error}</div>;
   }
 
-  const { stats, recentOrders, bestsellers } = dashboardData;
+  // Destructure after the checks
+  const { stats, recentOrders, bestsellers } = dashboardData || {};
 
   return (
-    <div className="flex min-h-screen p-8 bg-[#0B161A] text-white h-auto">
+    <div className="flex w-full min-h-screen p-8 bg-[#0B161A] text-white h-auto">
       
-      <div className="flex-1 p-6 bg-[#141E20] rounded-2xl">
+      <div className="flex-1 w-full p-6 bg-[#141E20] rounded-2xl">
         <Header title={'Dashboard'} />
         <div className="grid grid-cols-4 gap-6 mb-6">
           <div className="bg-zinc-900 p-4 rounded-md shadow-[0px_4px_4px_0px_rgba(0,0,0,0.25)]">
@@ -98,10 +111,20 @@ const AdminDashboard = () => {
         </div>
         <div className="grid grid-cols-2 gap-6">
           <div className="bg-zinc-900 p-6 rounded-md">
-            <h2 className="text-2xl font-semibold mb-4">Order Report</h2>
-            <button className="mb-4 px-4 py-2 bg-neutral-900 hover:cursor-pointer  rounded-[10px] border border-white">
-              Filter Order
-            </button>
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-2xl font-semibold">Order Report</h2>
+              <select
+                value={orderStatusFilter}
+                onChange={(e) => setOrderStatusFilter(e.target.value)}
+                className="px-4 py-2 bg-neutral-900 hover:cursor-pointer rounded-[10px] border border-white text-sm focus:outline-none focus:border-orange-400"
+              >
+                <option value="ALL">All Orders</option>
+                <option value="PENDING">Pending</option>
+                <option value="PREPARING">Preparing</option>
+                <option value="COMPLETED">Completed</option>
+                <option value="CANCELLED">Cancelled</option>
+              </select>
+            </div>
             <div className="grid grid-cols-4 gap-4 text-sm">
               <div>Customer</div>
               <div className="text-center">Menu</div>
@@ -109,39 +132,44 @@ const AdminDashboard = () => {
               <div className="text-center">Status</div>
             </div>
             <div className="space-y-4 mt-2">
-              {recentOrders.map((order) => {
+              {filteredOrders.map((order) => {
                 const customerImages = ['/cus1.png', '/cus2.png', '/cus3.png'];
-  const randomImg = customerImages[Math.floor(Math.random() * customerImages.length)];
+                const randomImg = customerImages[Math.floor(Math.random() * customerImages.length)];
                 return (
-                 <div key={order.id} className="grid grid-cols-4 gap-4 items-center">
-      <div className="flex items-center">
-        <img src={randomImg} alt="customer" className="w-10 h-10 rounded-full mr-2" />
-        <span>{order.customerName}</span>
-      </div>
-                  <div className="text-center">
-                    {order.items.map((item, idx) => (
-                      <div key={idx}>{item.itemName}</div>
-                    ))}
+                  <div key={order.id} className="grid grid-cols-4 gap-4 items-center">
+                    <div className="flex items-center">
+                      <img src={randomImg} alt="customer" className="w-10 h-10 rounded-full mr-2" />
+                      <span>{order.customerName}</span>
+                    </div>
+                    <div className="text-center">
+                      {order.items.map((item, idx) => (
+                        <div key={idx}>{item.itemName}</div>
+                      ))}
+                    </div>
+                    <div className="text-center">
+                      <span>${order.totalPrice.toFixed(2)}</span>
+                    </div>
+                    <div className="text-center">
+                      <span
+                        className={`px-4 py-1 rounded-3xl text-[10px] ${
+                          order.status === 'COMPLETED'
+                            ? 'bg-gray-700 text-green-300'
+                            : order.status === 'PREPARING'
+                            ? 'bg-slate-700 text-purple-300'
+                            : 'bg-stone-700 text-rose-400'
+                        }`}
+                      >
+                        {order.status.charAt(0) + order.status.slice(1).toLowerCase()}
+                      </span>
+                    </div>
                   </div>
-                  <div className="text-center">
-                    <span>${order.totalPrice.toFixed(2)}</span>
-                  </div>
-                  <div className="text-center">
-                    <span
-                      className={`px-4 py-1 rounded-3xl text-[10px] ${
-                        order.status === 'COMPLETED'
-                          ? 'bg-gray-700 text-green-300'
-                          : order.status === 'PREPARING'
-                          ? 'bg-slate-700 text-purple-300'
-                          : 'bg-stone-700 text-rose-400'
-                      }`}
-                    >
-                      {order.status.charAt(0) + order.status.slice(1).toLowerCase()}
-                    </span>
-                  </div>
+                );
+              })}
+              {filteredOrders.length === 0 && (
+                <div className="text-center py-4 text-gray-400">
+                  No orders found for the selected status
                 </div>
-              )
-})}
+              )}
             </div>
           </div>
           <div className="bg-zinc-900 p-6 rounded-md">
