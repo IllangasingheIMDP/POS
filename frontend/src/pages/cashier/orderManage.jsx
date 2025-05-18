@@ -3,9 +3,20 @@ import api from '../../constants/api';
 import './scrollbar.css';
 const OrderManage = () => {
     // State management
+    const [showPaymentModal, setShowPaymentModal] = useState(false);
+    const [selectedOrderForPayment, setSelectedOrderForPayment] = useState(null);
+    const [paymentDetails, setPaymentDetails] = useState({
+        orderId: null,
+        amount: 0,
+        method: 'CASH',
+        timestamp: new Date().toISOString()
+    });
+
     const [orders, setOrders] = useState([]);
     const [showOrderModal, setShowOrderModal] = useState(false);
     const [selectedOrder, setSelectedOrder] = useState(null);
+    const [payments, setPayments] = useState([]);
+
     const [newOrder, setNewOrder] = useState({
         customerName: '',
         orderType: 'DINE_IN',
@@ -20,15 +31,32 @@ const OrderManage = () => {
     useEffect(() => {
         fetchOrders();
         fetchMenuItems();
+        fetchPayments();
     }, []);
 
     // Fetch all orders
     const fetchOrders = async () => {
         try {
             const response = await api.get('/orders');
-            setOrders(response.data);
+            const ordersData = response.data;
+
+            // Map payments to orders
+            const ordersWithPayments = ordersData.map(order => ({
+                ...order,
+                payment: payments.find(payment => payment.orderId === order.id)
+            }));
+
+            setOrders(ordersWithPayments);
         } catch (error) {
             console.error('Error fetching orders:', error);
+        }
+    };
+    const fetchPayments = async () => {
+        try {
+            const response = await api.get('/payments');
+            setPayments(response.data);
+        } catch (error) {
+            console.error('Error fetching payments:', error);
         }
     };
 
@@ -73,7 +101,39 @@ const OrderManage = () => {
             console.error('Error creating order:', error);
         }
     };
+    // Add these functions after other function declarations
+    const handlePayment = async (order) => {
+        setSelectedOrderForPayment(order);
+        setPaymentDetails({
+            orderId: order.id,
+            amount: order.totalPrice,
+            method: 'CASH',
+            timestamp: new Date().toISOString()
+        });
+        setShowPaymentModal(true);
+    };
 
+    const submitPayment = async (e) => {
+        e.preventDefault();
+        try {
+            await api.post('/payments', paymentDetails);
+            setShowPaymentModal(false);
+            setSelectedOrderForPayment(null);
+            await fetchPayments(); // Fetch updated payments
+            await fetchOrders(); // Refresh orders with new payment status
+        } catch (error) {
+            console.error('Error processing payment:', error);
+        }
+    };
+    useEffect(() => {
+        if (payments.length > 0) {
+            const updatedOrders = orders.map(order => ({
+                ...order,
+                payment: payments.find(payment => payment.orderId === order.id)
+            }));
+            setOrders(updatedOrders);
+        }
+    }, [payments]);
     // Handle adding item to order
     const handleAddItem = (menuItem) => {
         const existingItem = newOrder.items.find(item => item.menuItemId === menuItem.id);
@@ -101,11 +161,11 @@ const OrderManage = () => {
                 <div className="flex justify-between items-center mb-8">
                     <div className='flex-col'>
                         <h1 className="text-4xl font-bold font-['Inter'] text-white mb-2 px-2">Order Management</h1>
-                        
-                        
+
+
                         <hr className='w-full border-t-2 mt-2 border-orange-400' />
                     </div>
-                    
+
                     <button
                         onClick={() => setShowOrderModal(true)}
                         className="bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-lg font-semibold hover:from-orange-600 hover:to-orange-700 transition-all duration-300"
@@ -126,6 +186,8 @@ const OrderManage = () => {
                                     <th className="py-3 text-gray-400">Table</th>
                                     <th className="py-3 text-gray-400">Status</th>
                                     <th className="py-3 text-gray-400">Total</th>
+
+                                    <th className="py-3 text-gray-400">Payment Status</th>
                                     <th className="py-3 text-gray-400">Actions</th>
                                 </tr>
                             </thead>
@@ -137,22 +199,29 @@ const OrderManage = () => {
                                         <td className="py-4 text-white">{order.orderType}</td>
                                         <td className="py-4 text-white">{order.tableNumber || '-'}</td>
                                         <td className="py-4">
-                                            <span className={`px-3 py-1 rounded-full text-xs ${
-                                                order.status === 'COMPLETED' ? 'bg-green-500/20 text-green-400' :
+                                            <span className={`px-3 py-1 rounded-full text-xs ${order.status === 'COMPLETED' ? 'bg-green-500/20 text-green-400' :
                                                 order.status === 'IN_PROGRESS' ? 'bg-blue-500/20 text-blue-400' :
-                                                'bg-orange-500/20 text-orange-400'
-                                            }`}>
+                                                    'bg-orange-500/20 text-orange-400'
+                                                }`}>
                                                 {order.status}
                                             </span>
                                         </td>
                                         <td className="py-4 text-white">LKR {order.totalPrice}</td>
                                         <td className="py-4">
-                                            <button
-                                                onClick={() => handleStatusUpdate(order.id, 'COMPLETED')}
-                                                className="text-blue-400 hover:text-blue-300 mr-3"
-                                            >
-                                                Complete
-                                            </button>
+                                            <span className={`px-3 py-1 rounded-full text-xs ${order.payment ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'
+                                                }`}>
+                                                {order.payment ? 'Paid' : 'Unpaid'}
+                                            </span>
+                                        </td>
+                                        <td className="py-4 flex space-x-3">
+                                            {!order.payment && order.status !== 'CANCELLED' && (
+                                                <button
+                                                    onClick={() => handlePayment(order)}
+                                                    className="text-green-400 hover:text-green-300"
+                                                >
+                                                    Process Payment
+                                                </button>
+                                            )}
                                             <button
                                                 onClick={() => setSelectedOrder(order)}
                                                 className="text-orange-400 hover:text-orange-300"
@@ -168,6 +237,63 @@ const OrderManage = () => {
                 </div>
             </div>
 
+            {/* Add this modal component before the closing div of the return statement */}
+            {showPaymentModal && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                    <div className="bg-[#1d2b2f] rounded-xl p-8 w-[500px]">
+                        <div className="flex justify-between items-center mb-6">
+                            <h2 className="text-2xl font-bold text-white">Process Payment</h2>
+                            <button
+                                onClick={() => setShowPaymentModal(false)}
+                                className="text-gray-400 hover:text-white"
+                            >
+                                ✕
+                            </button>
+                        </div>
+
+                        <form onSubmit={submitPayment} className="space-y-6">
+                            <div>
+                                <label className="block text-gray-400 mb-2">Amount</label>
+                                <input
+                                    type="number"
+                                    value={paymentDetails.amount}
+                                    onChange={(e) => setPaymentDetails({
+                                        ...paymentDetails,
+                                        amount: parseFloat(e.target.value)
+                                    })}
+                                    className="w-full bg-[#141E20] text-white rounded-lg p-3 border border-gray-700 focus:border-orange-500 focus:outline-none"
+                                    required
+                                    readOnly
+                                />
+                            </div>
+
+                            <div>
+                                <label className="block text-gray-400 mb-2">Payment Method</label>
+                                <select
+                                    value={paymentDetails.method}
+                                    onChange={(e) => setPaymentDetails({
+                                        ...paymentDetails,
+                                        method: e.target.value
+                                    })}
+                                    className="w-full bg-[#141E20] text-white rounded-lg p-3 border border-gray-700 focus:border-orange-500 focus:outline-none"
+                                    required
+                                >
+                                    <option value="CASH">Cash</option>
+                                    <option value="CARD">Card</option>
+                                    <option value="ONLINE">Online</option>
+                                </select>
+                            </div>
+
+                            <button
+                                type="submit"
+                                className="w-full bg-gradient-to-r from-orange-500 to-orange-600 text-white py-3 rounded-lg font-semibold hover:from-orange-600 hover:to-orange-700 transition-all duration-300"
+                            >
+                                Complete Payment
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            )}
             {/* New Order Modal */}
             {showOrderModal && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -189,7 +315,7 @@ const OrderManage = () => {
                                     <input
                                         type="text"
                                         value={newOrder.customerName}
-                                        onChange={(e) => setNewOrder({...newOrder, customerName: e.target.value})}
+                                        onChange={(e) => setNewOrder({ ...newOrder, customerName: e.target.value })}
                                         className="w-full bg-[#141E20] text-white rounded-lg p-3 border border-gray-700 focus:border-orange-500 focus:outline-none"
                                         required
                                     />
@@ -198,7 +324,7 @@ const OrderManage = () => {
                                     <label className="block text-gray-400 mb-2">Order Type</label>
                                     <select
                                         value={newOrder.orderType}
-                                        onChange={(e) => setNewOrder({...newOrder, orderType: e.target.value})}
+                                        onChange={(e) => setNewOrder({ ...newOrder, orderType: e.target.value })}
                                         className="w-full bg-[#141E20] text-white rounded-lg p-3 border border-gray-700 focus:border-orange-500 focus:outline-none"
                                         required
                                     >
@@ -214,7 +340,7 @@ const OrderManage = () => {
                                     <input
                                         type="number"
                                         value={newOrder.tableNumber}
-                                        onChange={(e) => setNewOrder({...newOrder, tableNumber: e.target.value})}
+                                        onChange={(e) => setNewOrder({ ...newOrder, tableNumber: e.target.value })}
                                         className="w-full bg-[#141E20] text-white rounded-lg p-3 border border-gray-700 focus:border-orange-500 focus:outline-none"
                                         required
                                     />
