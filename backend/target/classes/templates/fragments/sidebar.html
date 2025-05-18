@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="sidebar">
+
+
+<nav class="sidebar">
+    <ul class="nav-links">
+        <li><a href="#" onclick="loadFragment('dashboard')">Dashboard</a></li>
+        <li><a href="#" onclick="loadFragment('menu')">Menu Items</a></li>
+        <li><a href="#" onclick="loadFragment('staff')">Staff Manage</a></li>
+        <li><a href="#" onclick="loadFragment('inventory')">Inventory</a></li>
+        <li><a href="#" onclick="loadFragment('reservations')">Reservations</a></li>
+        <li><a href="#" onclick="loadFragment('report')">Report Analytics</a></li>
+        <li><a href="#" onclick="loadFragment('order-history')">Order History</a></li>
+        <li><a href="#" onclick="loadFragment('notifications')">Notifications</a></li>
+        <li><a href="#" onclick="loadFragment('settings')">Settings</a></li>
+        <li><a href="/logout">Logout</a></li>
+
+    </ul>
+
+</nav>
+</div>
+</body>
+</html>

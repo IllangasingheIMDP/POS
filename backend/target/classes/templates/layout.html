@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>RMS System</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+</head>
+<body>
+
+<header>
+    <h1>Restaurant Management System</h1>
+    <nav>
+        <a th:href="@{/templates/admin}">Dashboard</a> |
+        <a th:href="@{/menu}">Menu</a> |
+        <a th:href="@{/orders}">Orders</a> |
+        <a th:href="@{/logout}">Logout</a>
+    </nav>
+    <hr>
+</header>
+
+<main>
+    <div th:replace="~{::content}"></div>
+</main>
+
+<footer>
+    <hr>
+    <p>© 2025 RMS</p>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,95 @@
+<div class="menu-manage-container">
+    <h2>Menu Management</h2>
+    <button class="add-item-btn" onclick="openAddMenuItemModal()">Add New Item</button>
+
+    <div class="menu-filter">
+        <label for="categoryFilter">Filter by Category:</label>
+        <select id="categoryFilter" onchange="filterMenuItems()">
+            <option value="">All</option>
+            <option value="Starters">Starters</option>
+            <option value="Main Course">Main Course</option>
+            <option value="Desserts">Desserts</option>
+            <option value="Beverages">Beverages</option>
+        </select>
+    </div>
+
+    <table class="menu-table">
+        <thead>
+        <tr>
+            <th>Image</th>
+            <th>Item Name</th>
+            <th>Price</th>
+            <th>Category</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody id="menuItemsContainer">
+        <!-- Items will be dynamically populated via JS -->
+        </tbody>
+    </table>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div id="addItemModal" class="modal-overlay" style="display: none;">
+    <div class="modal-content">
+        <h2>Add New Menu Item</h2>
+        <input type="text" id="itemName" placeholder="Item Name">
+        <input type="number" id="itemPrice" placeholder="Price">
+        <select id="itemCategory">
+            <option value="Starters">Starters</option>
+            <option value="Main">Main</option>
+            <option value="Desserts">Desserts</option>
+        </select>
+        <button onclick="saveNewItem()">Save</button>
+        <button onclick="closeAddMenuItemModal()">Cancel</button>
+    </div>
+</div>
+
